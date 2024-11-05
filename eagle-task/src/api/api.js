@@ -14,9 +14,10 @@ export async function getCoursesWithGradedAssignments(apiKey) {
         const response = await axios.post(`${BASE_URL}/get-courses-with-graded-assignments`, {
             api_key: apiKey
         });
-        return response.data.courses_with_grades;
+        return response.data.courses_with_graded_assignments; 
     } catch (error) {
         console.error("Error fetching courses with grades:", error);
         throw error;
     }
 }
+
