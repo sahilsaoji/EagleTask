@@ -5,11 +5,11 @@ import './index.css';
 
 
 // Import your page components
-import Chat from './components/Chat';
-import Dashboard from './components/Dashboard';
-import Grades from './components/Grades';
-import Loading from './components/Loading';
-import Login from './components/Login';
+import Tasks from './components/tasks';
+import Dashboard from './components/dashboard';
+import Grades from './components/grades';
+import Loading from './components/loading';
+import Login from './components/login';
 import Navbar from './components/Navbar'; // Make sure Navbar is capitalized here
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
         {/* Route Definitions */}
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/tasks" element={<Tasks />} />
           <Route path="/grades" element={<Grades />} />
           <Route path="/loading" element={<Loading />} />
           <Route path="/login" element={<Login />} />
