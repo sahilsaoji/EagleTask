@@ -58,6 +58,7 @@ const Grades = () => {
                                                 >
                                                     <span>{assignment.name}</span>
                                                     <span>{assignment.submission_score}</span>
+                                                    <span>{assignment.total_score}</span>
                                                 </div>
                                             ))
                                         ) : (
