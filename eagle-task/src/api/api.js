@@ -9,9 +9,9 @@ const BASE_URL = 'http://localhost:8000'; // Update this URL if needed
  * @param {string} apiKey - The user's Canvas API key.
  * @returns {Promise<Object>} - A promise that resolves to the courses with grades data.
  */
-export async function getCoursesWithGrades(apiKey) {
+export async function getCoursesWithGradedAssignments(apiKey) {
     try {
-        const response = await axios.post(`${BASE_URL}/get-courses-with-grades`, {
+        const response = await axios.post(`${BASE_URL}/get-courses-with-graded-assignments`, {
             api_key: apiKey
         });
         return response.data.courses_with_grades;

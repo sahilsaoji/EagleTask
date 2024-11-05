@@ -1,6 +1,6 @@
 // Login.jsx
 import React, { useState } from 'react';
-import { getCoursesWithGrades } from '../api/api';
+import { getCoursesWithGradedAssignments } from '../api/api';
 
 export const Login = () => {
     const [api_key, setApiKey] = useState('');
@@ -10,7 +10,7 @@ export const Login = () => {
         e.preventDefault();
         try {
             // Send the API key to the backend and retrieve courses with grades
-            const coursesWithGrades = await getCoursesWithGrades(api_key);
+            const coursesWithGrades = await getCoursesWithGradedAssignments(api_key);
 
             // Store the API key and courses data in local storage (or wherever needed)
             localStorage.setItem('api_key', api_key);
