@@ -6,8 +6,11 @@ const Grades = () => {
 
     useEffect(() => {
         // Retrieve courses with grades from localStorage
-        const storedData = localStorage.getItem('courses_with_grades');
+        const storedData = localStorage.getItem('courses_with_graded_assignments');
+
+        // Log stored data to verify it is loaded
         if (storedData) {
+            console.log(JSON.parse(storedData)); // Parsing to see the object structure
             setCoursesWithGrades(JSON.parse(storedData));
         }
     }, []);
@@ -47,14 +50,14 @@ const Grades = () => {
                                 </div>
                                 {course.isOpen && (
                                     <div className="bg-[#D9D9D9] p-4 mt-2 rounded-md">
-                                        {course.grades.length > 0 ? (
-                                            course.grades.map((grade, gradeIndex) => (
+                                        {course.graded_assignments.length > 0 ? (
+                                            course.graded_assignments.map((assignment, assignmentIndex) => (
                                                 <div
-                                                    key={gradeIndex}
+                                                    key={assignmentIndex}
                                                     className="flex justify-between bg-[#BC9B6A] rounded-md p-2 mb-2 text-white"
                                                 >
-                                                    <span>{grade.name}</span>
-                                                    <span>{grade.score}</span>
+                                                    <span>{assignment.name}</span>
+                                                    <span>{assignment.submission_score}</span>
                                                 </div>
                                             ))
                                         ) : (

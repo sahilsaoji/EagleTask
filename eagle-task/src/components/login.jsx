@@ -14,7 +14,7 @@ export const Login = () => {
 
             // Store the API key and courses data in local storage (or wherever needed)
             localStorage.setItem('api_key', api_key);
-            localStorage.setItem('courses_with_grades', JSON.stringify(coursesWithGrades));
+            localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
 
             // Redirect to dashboard or wherever appropriate
             window.location.href = '/dashboard';
