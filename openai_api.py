@@ -1,46 +1,50 @@
-import os
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import openai
+import os
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables
 load_dotenv()
 
-# Initialize FastAPI app
-app = FastAPI()
-
 # Set up OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
+# Initialize a router
+router = APIRouter()
+
 # Define request and response models
 class TaskRequest(BaseModel):
-    prompt: str  # This will contain details about the student's assignments or work
+    prompt: str
 
 class TaskResponse(BaseModel):
-    response: str  # This will be the generated task list for the student
+    response: str
 
-@app.post("/create-tasks", response_model=TaskResponse)
+@router.post("/create-tasks", response_model=TaskResponse)
 async def create_task_list(request: TaskRequest):
+    """Creates a task list from the user's prompt using the OpenAI API."""
     try:
-        # Send request to OpenAI API with a specialized prompt
+        # Instructions for the assistant
         assistant_instructions = (
             "You are a helpful assistant designed to create organized task lists for students based on their assignments or workload. "
-            "The student will describe their tasks or assignments, and you should break them down into actionable steps with priorities "
-            "and deadlines if possible. Focus on helping them manage their workload effectively."
+            "Break down tasks into actionable steps with priorities and deadlines where possible."
         )
         
-        prompt = f"{assistant_instructions}\n\nStudent's tasks: {request.prompt}\n\nCreate a detailed task list for the student:"
-        
-        # OpenAI API call
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=prompt,
+        # Make the correct OpenAI ChatCompletion API call
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",  # Use gpt-4o-mini as specified
+            messages=[
+                {"role": "system", "content": assistant_instructions},
+                {"role": "user", "content": request.prompt}
+            ],
             max_tokens=150
         )
-        
-        # Extract and return response text
-        reply = response.choices[0].text.strip()
+
+        # Access the response content using dot notation
+        reply = response.choices[0].message.content.strip()
         return TaskResponse(response=reply)
+
     except Exception as e:
+        logging.error("Error in create_task_list: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")

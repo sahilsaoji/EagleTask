@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import sys
-import os
-import logging
 from fastapi.middleware.cors import CORSMiddleware
+import logging
+import os
+import sys
+from pydantic import BaseModel
 import canvas_api
-
+from openai_api import router as openai_router  # Import the router
 
 # Logging configuration
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,6 +21,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include the OpenAI router
+app.include_router(openai_router)
 
 class CanvasAPIKey(BaseModel):
     api_key: str
@@ -38,13 +41,12 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
         courses_with_graded_assignments = []
 
         for course in courses:
-            # Safely fetch the course name or use a placeholder if it's missing
             course_name = getattr(course, 'name', 'Unnamed Course')
             logging.info(f"Processing course: {course_name} (ID: {course.id})")
             
             graded_assignments = canvas_api.get_graded_assignments(data.api_key, course.id)
             
-            if graded_assignments:  # Only add the course if there are graded assignments
+            if graded_assignments:
                 course_details = {
                     "course_name": course_name,
                     "graded_assignments": graded_assignments
@@ -58,12 +60,7 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
             logging.info("No courses with graded assignments were found.")
             return {"message": "No courses with graded assignments could be retrieved."}
 
-
-        # Print the thing being returned
-        returnObject = {"courses_with_graded_assignments": courses_with_graded_assignments}
-        logging.info(str(returnObject))
-
-        return returnObject
+        return {"courses_with_graded_assignments": courses_with_graded_assignments}
 
     except Exception as e:
         logging.error("Failed to fetch courses and graded assignments", exc_info=True)
