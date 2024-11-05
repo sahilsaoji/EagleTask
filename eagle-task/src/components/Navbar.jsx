@@ -14,8 +14,8 @@ function Navbar() {
       {/* Centered Nav Links */}
       <ul className="flex space-x-6 text-lg font-semibold">
         <li>
-          <Link to="/chat" className="hover:text-gray-300">
-            Chat
+          <Link to="/tasks" className="hover:text-gray-300">
+            Tasks
           </Link>
         </li>
         <li>
