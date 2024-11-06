@@ -60,6 +60,7 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
             logging.info("No courses with graded assignments were found.")
             return {"message": "No courses with graded assignments could be retrieved."}
 
+        logging.info(str(courses_with_graded_assignments))
         return {"courses_with_graded_assignments": courses_with_graded_assignments}
 
     except Exception as e:

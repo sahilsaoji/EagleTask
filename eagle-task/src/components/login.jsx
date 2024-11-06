@@ -19,54 +19,58 @@ export const Login = () => {
             console.error("Login failed:", err);
             setError("Failed to retrieve data. Please check your API key and try again.");
         } finally {
-            setLoading(false); // Set loading to false after processing
+            setLoading(false);
         }
     };
 
     if (loading) {
-        return <Loading />; // Show loading screen if loading is true
+        return <Loading />;
     }
+
     return (
-        <div className="flex items-center justify-center min-h-screen bg-[#D9D9D9]">
-            {/* Left side with GIF */}
-            <div className="hidden md:flex md:w-1/2 justify-center">
-                <div className="p-5 rounded-lg border-5 border-[#1E1E1E] bg-[#1E1E1E] flex items-center justify-center">
+        <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-[#D9D9D9] px-4">
+            {/* Left side with GIF and instructions */}
+            <div className="flex flex-col items-center md:w-1/2 md:pr-8 mb-8 md:mb-0">
+                <div className="p-5 rounded-lg border-4 border-[#1E1E1E] bg-[#1E1E1E]">
                     <img
                         src="/token.gif"
                         alt="Token animation"
-                        className="max-w-full max-h-350 object-contain"
+                        className="w-full h-auto object-contain max-w-[650px]"
                     />
                 </div>
+                <p className="text-center mt-4 text-black text-lg max-w-[500px]">
+                    Generate an Access Token by going to <strong>"Account ➡️ Settings ➡️ New Access Token"</strong>.
+                    Then copy down the access token.
+                </p>
             </div>
 
+
             {/* Right side with form */}
-            <div className="flex bg-[#1E1E1E] rounded-lg shadow-lg p-8 w-full max-w-md md:w-1/2">
-                <div className="w-full">
-                    <h1 className="text-3xl font-semibold text-center text-white mb-6">EagleTask</h1>
-                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label className="block text-gray-300 text-sm font-medium mb-2" htmlFor="api_key">
-                                Canvas API Key
-                            </label>
-                            <input
-                                type="password"
-                                id="api_key"
-                                value={api_key}
-                                onChange={(e) => setApiKey(e.target.value)}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-400 focus:outline-none focus:ring-2 focus:ring-[#7B313C] bg-gray-200 text-gray-900"
-                                placeholder="Enter your Canvas API key"
-                                required
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full py-2 bg-[#BC9B6A] text-white font-semibold rounded-lg hover:bg-[#7d643f] transition duration-200"
-                        >
-                            Login
-                        </button>
-                    </form>
-                </div>
+            <div className="bg-[#1E1E1E] rounded-lg shadow-xl p-8 w-full max-w-md md:w-1/2 flex flex-col">
+                <h1 className="text-4xl font-bold text-center text-[#BC9B6A] mb-6">EagleTask</h1>
+                {error && <p className="text-[#7B313C] text-center mb-4">{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-[#D9D9D9] text-sm font-medium mb-2" htmlFor="api_key">
+                            Access Token
+                        </label>
+                        <input
+                            type="password"
+                            id="api_key"
+                            value={api_key}
+                            onChange={(e) => setApiKey(e.target.value)}
+                            className="w-full px-4 py-2 rounded-lg border border-[#BC9B6A] focus:outline-none focus:ring-2 focus:ring-[#BC9B6A] bg-[#D9D9D9] text-black"
+                            placeholder="Enter your Canvas API key"
+                            required
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-[#BC9B6A] text-white font-semibold rounded-lg hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
+                    >
+                        Login
+                    </button>
+                </form>
             </div>
         </div>
     );
