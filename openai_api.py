@@ -21,6 +21,7 @@ class TaskRequest(BaseModel):
 class TaskResponse(BaseModel):
     response: str
 
+# API endpoint to create a task list based on user input
 @router.post("/create-tasks", response_model=TaskResponse)
 async def create_task_list(request: TaskRequest):
     """Creates a task list from the user's prompt using the OpenAI API."""

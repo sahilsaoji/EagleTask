@@ -33,6 +33,7 @@ async def root():
     logging.info("Root endpoint accessed")
     return {"message": "Hello, FastAPI!"}
 
+# API endpoint to fetch courses and graded assignments for Grades Page 
 @app.post("/get-courses-with-graded-assignments")
 async def get_courses_with_graded_assignments(data: CanvasAPIKey):
     logging.info(f"Fetching courses and graded assignments for API Key: {data.api_key}")
@@ -66,3 +67,9 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
     except Exception as e:
         logging.error("Failed to fetch courses and graded assignments", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
+
+# API endpoint to fetch upcoming assignments for Tasks 
+
+
+# API endpoint to fetch calendar for each course 
+
