@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import { getCoursesWithGradedAssignments } from '../api/api';
+import Loading from './Loading';
 
 export const Login = () => {
     const [api_key, setApiKey] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const coursesWithGrades = await getCoursesWithGradedAssignments(api_key);
             localStorage.setItem('api_key', api_key);
             localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
-            window.location.href = '/dashboard';
+            window.location.href = '/';
         } catch (err) {
             console.error("Login failed:", err);
             setError("Failed to retrieve data. Please check your API key and try again.");
+        } finally {
+            setLoading(false); // Set loading to false after processing
         }
     };
 
+    if (loading) {
+        return <Loading />; // Show loading screen if loading is true
+    }
     return (
         <div className="flex items-center justify-center min-h-screen bg-[#D9D9D9]">
             {/* Left side with GIF */}
