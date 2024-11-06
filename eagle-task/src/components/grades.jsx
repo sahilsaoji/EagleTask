@@ -52,14 +52,18 @@ const Grades = () => {
                                     <div className="bg-[#D9D9D9] p-4 mt-2 rounded-md">
                                         {course.graded_assignments.length > 0 ? (
                                             course.graded_assignments.map((assignment, assignmentIndex) => (
-                                                <div
-                                                    key={assignmentIndex}
-                                                    className="flex justify-between bg-[#BC9B6A] rounded-md p-2 mb-2 text-white"
-                                                >
-                                                    <span>{assignment.name}</span>
-                                                    <span>{assignment.submission_score}</span>
-                                                    <span>{assignment.total_score}</span>
-                                                </div>
+                                        <div
+                                            key={assignmentIndex}
+                                            className="flex justify-between bg-[#BC9B6A] rounded-md p-4 mb-2 text-white items-center"
+                                        >
+                                            <span>{assignment.name}</span>
+                                            
+                                            {/* Display the percentage right-aligned */}
+                                            <span className="font-bold ml-auto text-right">
+                                                {assignment.submission_score} / {assignment.points_possible} (
+                                                {((assignment.submission_score / assignment.points_possible) * 100).toFixed(2)}%)
+                                            </span>
+                                        </div>
                                             ))
                                         ) : (
                                             <p className="text-gray-400">No grades available</p>
