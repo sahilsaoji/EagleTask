@@ -1,16 +1,19 @@
-// GradesPage.js
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Grades = () => {
     const [coursesWithGrades, setCoursesWithGrades] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [taskList, setTaskList] = useState([]);
+    const [input, setInput] = useState("");
+    const [isTaskView, setIsTaskView] = useState(true);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
         // Retrieve courses with grades from localStorage
         const storedData = localStorage.getItem('courses_with_graded_assignments');
-
-        // Log stored data to verify it is loaded
         if (storedData) {
-            console.log(JSON.parse(storedData)); // Parsing to see the object structure
+            console.log(JSON.parse(storedData)); // Log to verify structure
             setCoursesWithGrades(JSON.parse(storedData));
         }
     }, []);
@@ -23,6 +26,48 @@ const Grades = () => {
             return course;
         });
         setCoursesWithGrades(updatedCourses);
+    };
+
+    const sendMessage = async (message = input) => {
+        if (message.trim() === "") return;
+
+        const newMessage = { sender: "user", text: message };
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        try {
+            // Send the user's message to the backend
+            const response = await axios.post('http://127.0.0.1:8000/analyze-grades', {
+                prompt: message,
+            });
+
+            const botMessage = {
+                sender: "bot",
+                text: response.data.response,
+            };
+
+            setMessages((prevMessages) => [...prevMessages, botMessage]);
+
+            // Check if the user is requesting the task list
+            if (message.toLowerCase().includes('generate task list') || message.toLowerCase().includes('show me the task list')) {
+                const tasks = response.data.response
+                    .split("\n")
+                    .map(task => task.trim())
+                    .filter(task => task !== "");
+                setTaskList(tasks);
+            }
+
+        } catch (error) {
+            console.error("Error with the API request:", error);
+        }
+
+        setInput("");
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            sendMessage();
+        }
     };
 
     return (
@@ -52,18 +97,16 @@ const Grades = () => {
                                     <div className="bg-[#D9D9D9] p-4 mt-2 rounded-md">
                                         {course.graded_assignments.length > 0 ? (
                                             course.graded_assignments.map((assignment, assignmentIndex) => (
-                                        <div
-                                            key={assignmentIndex}
-                                            className="flex justify-between bg-[#BC9B6A] rounded-md p-4 mb-2 text-white items-center"
-                                        >
-                                            <span>{assignment.name}</span>
-                                            
-                                            {/* Display the percentage right-aligned */}
-                                            <span className="font-bold ml-auto text-right">
-                                                {assignment.submission_score} / {assignment.points_possible} (
-                                                {((assignment.submission_score / assignment.points_possible) * 100).toFixed(2)}%)
-                                            </span>
-                                        </div>
+                                                <div
+                                                    key={assignmentIndex}
+                                                    className="flex justify-between bg-[#BC9B6A] rounded-md p-4 mb-2 text-white items-center"
+                                                >
+                                                    <span>{assignment.name}</span>
+                                                    <span className="font-bold ml-auto text-right">
+                                                        {assignment.submission_score} / {assignment.points_possible} (
+                                                        {((assignment.submission_score / assignment.points_possible) * 100).toFixed(2)}%)
+                                                    </span>
+                                                </div>
                                             ))
                                         ) : (
                                             <p className="text-gray-400">No grades available</p>
@@ -76,17 +119,40 @@ const Grades = () => {
                 </div>
 
                 {/* Chat with AI Section */}
-                <div className="w-1/2 bg-gray-100 text-gray-900 rounded-lg p-6">
-                    <h1 className="text-3xl font-semibold text-center mb-6">Chat With AI</h1>
-                    <div className="bg-gray-200 rounded-lg p-4 mb-4 h-64 overflow-y-auto border border-gray-300">
+                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col h-screen">
+                    <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Chat With AI</h1>
+                    <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
+                        {messages.map((msg, index) => (
+                            <div
+                                key={index}
+                                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                            >
+                                <div
+                                    className={`p-3 mb-2 rounded-lg max-w-xs ${
+                                        msg.sender === "user"
+                                            ? "bg-[#7B313C] text-white text-right"
+                                            : "bg-gray-300 text-gray-900 text-left"
+                                    }`}
+                                    style={{ wordWrap: "break-word" }}
+                                >
+                                    {msg.text}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                     <div className="flex items-center gap-2">
                         <input
                             type="text"
-                            placeholder="Create a study plan for me!"
-                            className="flex-1 p-2 rounded-md border border-gray-400"
+                            placeholder="Type your message here..."
+                            className="flex-1 p-2 rounded-md border border-gray-400 text-white"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={handleKeyDown}
                         />
-                        <button className="bg-[#7B313C] text-white px-4 py-2 rounded-md">
+                        <button
+                            className="bg-[#7B313C] text-white px-4 py-2 rounded-md"
+                            onClick={() => sendMessage(input)}
+                        >
                             Send
                         </button>
                     </div>
