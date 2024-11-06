@@ -1,46 +1,36 @@
-// Loading page 
+import React, { useState, useEffect } from 'react';
 
-/* Simple jsx loading page while calling CanvasAPI 
+const Loading = () => {
+  const messages = [
+    { text: 'Fetching your courses 📚', delay: 1000 },
+    { text: 'Fetching your assignments 📝', delay: 2000 },
+    { text: 'Grabbing grades 📊', delay: 3000 },
+  ];
 
-*/ 
+  const [currentMessage, setCurrentMessage] = useState(messages[0].text);
 
-import React from 'react';
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMessage((prev) => {
+        const currentIndex = messages.findIndex((msg) => msg.text === prev);
+        return messages[(currentIndex + 1) % messages.length].text;
+      });
+    }, 1500); // Rotate messages every 1.5 seconds
 
-export const Loading = () => {
-    return (
-        <div style={styles.container}>
-            <h1>Loading</h1>
-            <div style={styles.spinner}></div>
-        </div>
-    );
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex flex-col justify-center items-center min-h-screen bg-[#D9D9D9] text-[#1E1E1E]">
+      <div className="flex flex-col items-center">
+        {/* Animated Spinner */}
+        <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-[#BC9B6A] border-opacity-75 mb-8"></div>
+
+        {/* Loading Messages */}
+        <p className="text-2xl font-semibold text-center">{currentMessage}</p>
+      </div>
+    </div>
+  );
 };
-
-const styles = {
-    container: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-    },
-    spinner: {
-        border: '5px solid #f3f3f3',
-        borderTop: '5px solid #3498db',
-        borderRadius: '50%',
-        width: '50px',
-        height: '50px',
-        animation: 'spin 1s linear infinite',
-        marginTop: '20px',
-    },
-};
-
-// Create keyframes for the spinner animation
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(`
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`, styleSheet.cssRules.length);
 
 export default Loading;
