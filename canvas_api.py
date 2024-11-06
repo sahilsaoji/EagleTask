@@ -12,11 +12,13 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+# Create an instance of the Canvas API using the provided API key
 def get_canvas_instance(api_key: str):
     """Helper function to create a Canvas instance."""
     logger.info("Creating a Canvas instance")
     return Canvas(BASE_URL, api_key)
 
+# Get all the courses a user is currently enrolled in 
 def get_courses(api_key: str):
     """Fetches the list of courses for the user, filtering for the current term."""
     logger.info("Fetching courses from Canvas")
@@ -39,7 +41,7 @@ def get_courses(api_key: str):
         raise
 
 
-
+# Get all the graded assignments for a user 
 def get_graded_assignments(api_key: str, course_id: int):
     """Fetches graded assignments for a specific course."""
     logger.info(f"Fetching graded assignments for course ID: {course_id}")
@@ -85,3 +87,8 @@ def get_courses_with_graded_assignments(api_key: str):
         all_graded_assignments[course.id] = graded_assignments
     
     return all_graded_assignments
+
+# Additional functionality to get a user's upcoming assignments 
+
+# Additional functionality to get course calendar events (.ics format)
+        

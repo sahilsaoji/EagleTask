@@ -39,7 +39,7 @@ const Dashboard = () => {
           <div className="bg-[#7B313C] text-white p-6 rounded-md shadow-md">
             <h2 className="text-xl font-semibold mb-2">Resources</h2>
             <p className="text-[#D9D9D9] mb-4">Academic and wellness resources for Boston College students</p>
-            <Link to="/resources">
+            <Link to="https://www.bc.edu/bc-web/campus-life/health-wellness.html">
               <button className="bg-[#BC9B6A] text-[#7B313C] px-4 py-2 rounded hover:bg-[#7B313C] hover:text-[#BC9B6A] border border-[#BC9B6A]">
                 &rarr;
               </button>
