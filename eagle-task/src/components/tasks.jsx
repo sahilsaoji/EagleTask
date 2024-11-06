@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const Tasks = () => {
     const [messages, setMessages] = useState([]);
     const [taskList, setTaskList] = useState([]);
     const [input, setInput] = useState("");
     const [isTaskView, setIsTaskView] = useState(true);
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
-    const sendMessage = async () => {
-        if (input.trim() === "") return;
+    const sendMessage = async (message = input) => {
+        if (message.trim() === "") return;
 
-        const newMessage = { sender: "user", text: input };
+        const newMessage = { sender: "user", text: message };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
         try {
             // Send the user's message to the backend
             const response = await axios.post('http://127.0.0.1:8000/create-tasks', {
-                prompt: input,
+                prompt: message,
             });
 
             const botMessage = {
@@ -27,7 +30,7 @@ const Tasks = () => {
             setMessages((prevMessages) => [...prevMessages, botMessage]);
 
             // Check if the user is requesting the task list
-            if (input.toLowerCase().includes('generate task list') || input.toLowerCase().includes('show me the task list')) {
+            if (message.toLowerCase().includes('generate task list') || message.toLowerCase().includes('show me the task list')) {
                 // Extract tasks from the bot's response
                 const tasks = response.data.response
                     .split("\n")
@@ -88,9 +91,15 @@ const Tasks = () => {
                         />
                         <button
                             className="bg-[#7B313C] text-white px-4 py-2 rounded-md"
-                            onClick={sendMessage}
+                            onClick={() => sendMessage(input)}
                         >
                             Send
+                        </button>
+                        <button
+                            className="bg-[#7B313C] text-white px-4 py-2 rounded-md"
+                            onClick={() => sendMessage("generate task list")}
+                        >
+                            Send Task List
                         </button>
                     </div>
                 </div>
@@ -125,10 +134,14 @@ const Tasks = () => {
                             )}
                         </div>
                     ) : (
-                        // Calendar View (Placeholder)
-                        <div className="bg-gray-100 rounded-lg p-4 border border-gray-300 h-64 flex items-center justify-center">
-                            <p className="text-gray-500">
-                                Calendar view coming soon! This will show tasks by date.
+                        // Calendar View with Task Integration
+                        <div className="bg-gray-100 rounded-lg p-4 border border-gray-300 flex flex-col items-center">
+                            <Calendar
+                                onChange={setSelectedDate}
+                                value={selectedDate}
+                            />
+                            <p className="text-gray-500 mt-4">
+                                Selected Date: {selectedDate.toDateString()}
                             </p>
                         </div>
                     )}
