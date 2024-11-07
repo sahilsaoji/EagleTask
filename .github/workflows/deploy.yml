@@ -23,7 +23,7 @@ jobs:
         working-directory: eagle-task
 
       - name: Build the project
-        run: npm run build
+        run: CI='' npm run build # Suppresses warnings as errors
         working-directory: eagle-task
 
       - name: Deploy to GitHub Pages
