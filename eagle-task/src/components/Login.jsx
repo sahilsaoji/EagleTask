@@ -16,8 +16,8 @@ export const Login = ({ setLoggedIn }) => {
             const coursesWithGrades = await getCoursesWithGradedAssignments(api_key);
             localStorage.setItem('api_key', api_key);
             localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
-            setLoggedIn(true); // Update the login state after setting localStorage
-            navigate('/'); // Navigate to the dashboard after login
+            setLoggedIn(true);
+            navigate('/');
         } catch (err) {
             console.error("Login failed:", err);
             setError("Failed to retrieve data. Please check your API key and try again.");
@@ -31,48 +31,54 @@ export const Login = ({ setLoggedIn }) => {
     }
 
     return (
-        <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-[#D9D9D9] px-4">
-            {/* Left side with GIF and instructions */}
-            <div className="flex flex-col items-center md:w-1/2 md:pr-8 mb-8 md:mb-0">
-                <div className="p-5 rounded-lg border-4 border-[#1E1E1E] bg-[#1E1E1E]">
-                    <img
-                        src={`${process.env.PUBLIC_URL}/token.gif`}
-                        alt="Token animation"
-                        className="w-full h-auto object-contain max-w-[650px]"
-                    />
-                </div>
-                <p className="text-center mt-4 text-black text-lg max-w-[500px]">
-                    Generate an Access Token by going to <strong>"Account ➡️ Settings ➡️ New Access Token"</strong>.
-                    Then copy down the access token.
-                </p>
-            </div>
-
-            {/* Right side with form */}
-            <div className="bg-[#1E1E1E] rounded-lg shadow-xl p-8 w-full max-w-md md:w-1/2 flex flex-col">
-                <h1 className="text-4xl font-bold text-center text-[#BC9B6A] mb-6">EagleTask</h1>
-                {error && <p className="text-[#7B313C] text-center mb-4">{error}</p>}
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <label className="block text-[#D9D9D9] text-sm font-medium mb-2" htmlFor="api_key">
-                            Access Token
-                        </label>
+        <div className="flex justify-center items-center min-h-screen bg-[#7B313C]">
+            <div className="bg-[#1E1E1E] rounded-[60px] shadow-2xl p-10 w-full max-w-xl text-[#D9D9D9] flex flex-col items-center space-y-6 min-h-[250px]">
+                <h1 className="text-5xl font-bold text-center text-white">EagleTask</h1>
+                {error && <p className="text-[#7B313C] text-center">{error}</p>}
+                <form onSubmit={handleSubmit} className="w-full flex flex-col items-center space-y-4">
+                    <div className="w-5/6">
                         <input
                             type="password"
                             id="api_key"
                             value={api_key}
                             onChange={(e) => setApiKey(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg border border-[#BC9B6A] focus:outline-none focus:ring-2 focus:ring-[#BC9B6A] bg-[#D9D9D9] text-black"
-                            placeholder="Enter your Canvas API key"
+                            className="w-full px-4 py-3 rounded-lg border border-[#BC9B6A] focus:outline-none focus:ring-2 focus:ring-[#BC9B6A] bg-[#333] text-white placeholder-gray-400"
+                            placeholder="Access Token"
                             required
                         />
                     </div>
-                    <button
-                        type="submit"
-                        className="w-full py-3 bg-[#BC9B6A] text-white font-semibold rounded-lg hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
-                    >
-                        Login
-                    </button>
+                    <div className="flex justify-between w-5/6 space-x-4">
+                        <button
+                            type="submit"
+                            className="w-1/2 py-3 bg-[#BC9B6A] text-white font-semibold rounded-full hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
+                        >
+                            Login
+                        </button>
+                        <div className="relative w-1/2 group">
+                            <button
+                                type="button"
+                                className="w-full py-3 bg-[#555] text-white font-semibold rounded-full hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
+                            >
+                                Help
+                            </button>
+                            <div className="absolute bottom-full left-0 w-full p-3 text-sm bg-[#333] text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
+                                Go to "Account ➡️ Settings ➡️ New Access Token" to generate an API key.
+                            </div>
+                        </div>
+                    </div>
                 </form>
+                <p className="text-center mt-4 text-sm">
+                    Please login with your{' '}
+                    <a
+                        href="https://bostoncollege.instructure.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-[#BC9B6A] hover:underline"
+                    >
+                        Canvas
+                    </a>{' '}
+                    Access Token
+                </p>
             </div>
         </div>
     );

@@ -34,8 +34,8 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Navbar always shown, with buttons greyed out if not logged in */}
-        <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
+        {/* Show Navbar only when logged in */}
+        {loggedIn && <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />}
         
         {/* Route Definitions */}
         <Routes>

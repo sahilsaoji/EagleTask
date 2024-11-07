@@ -47,7 +47,7 @@ const Loading = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#D9D9D9]">
-      <div className="flex flex-col items-center w-full max-w-xl bg-[#1E1E1E] rounded-3xl shadow-2xl p-10 text-[#D9D9D9] min-h-[350px]">
+      <div className="flex flex-col items-center w-full max-w-xl bg-[#1E1E1E] rounded-[60px] shadow-2xl p-10 text-[#D9D9D9] min-h-[250px]">
         {showProgressBar ? (
           <div className="w-full flex flex-col items-center space-y-4">
             <div className="relative w-full">
@@ -58,15 +58,15 @@ const Loading = () => {
                 />
               </div>
             </div>
-            <p className="text-2xl font-semibold animate-pulse text-center">{currentMessage}</p>
+            <p className="text-lg font-semibold animate-pulse text-center">{currentMessage}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center space-y-4">
             {/* Animated Spinner */}
-            <div className="animate-spin rounded-full h-24 w-24 border-t-4 border-[#BC9B6A] border-opacity-75"></div>
+            <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-[#BC9B6A] border-opacity-75"></div>
 
             {/* Loading Messages */}
-            <p className="text-3xl font-semibold text-center animate-pulse">{currentMessage}</p>
+            <p className="text-lg font-semibold text-center animate-pulse">{currentMessage}</p>
           </div>
         )}
       </div>
