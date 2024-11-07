@@ -31,7 +31,7 @@ export const Login = ({ setLoggedIn }) => {
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-[#7B313C]">
+        <div className="flex flex-col justify-center items-center min-h-screen bg-[#7B313C]">
             <div className="bg-[#1E1E1E] rounded-[60px] shadow-2xl p-10 w-full max-w-xl text-[#D9D9D9] flex flex-col items-center space-y-6 min-h-[250px]">
                 <h1 className="text-5xl font-bold text-center text-white">EagleTask</h1>
                 {error && <p className="text-[#7B313C] text-center">{error}</p>}
@@ -80,6 +80,9 @@ export const Login = ({ setLoggedIn }) => {
                     Access Token
                 </p>
             </div>
+            <p className="text-white text-center text-sm mt-4 fixed bottom-4">
+                Using your access token, we will provide insights and analysis on your performance
+            </p>
         </div>
     );
 };

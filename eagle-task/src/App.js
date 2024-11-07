@@ -19,41 +19,39 @@ function App() {
     setLoggedIn(!!localStorage.getItem('courses_with_graded_assignments'));
   }, []);
 
-  // Function to check if the user is logged in
   const isLoggedIn = () => {
-    const loggedInStatus = !!localStorage.getItem('courses_with_graded_assignments');
-    console.log("Is user logged in:", loggedInStatus); // Debug log to verify login status
-    return loggedInStatus;
+    return !!localStorage.getItem('courses_with_graded_assignments');
   };
 
   const handleSignOut = () => {
     localStorage.clear();
-    setLoggedIn(false); // Update login state to reflect sign-out
+    setLoggedIn(false);
   };
 
   return (
     <Router>
       <div className="App">
-        {/* Show Navbar only when logged in */}
-        {loggedIn && <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />}
-        
-        {/* Route Definitions */}
-        <Routes>
-          <Route 
-            path="/" 
-            element={isLoggedIn() ? <Dashboard /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/tasks" 
-            element={isLoggedIn() ? <Tasks /> : <Navigate to="/login" />} 
-          />
-          <Route 
-            path="/grades" 
-            element={isLoggedIn() ? <Grades /> : <Navigate to="/login" />} 
-          />
-          <Route path="/loading" element={<Loading />} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
-        </Routes>
+        <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
+
+        {/* Main Content */}
+        <div className="mt-[0px]">
+          <Routes>
+            <Route
+              path="/"
+              element={isLoggedIn() ? <Dashboard /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/tasks"
+              element={isLoggedIn() ? <Tasks /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/grades"
+              element={isLoggedIn() ? <Grades /> : <Navigate to="/login" />}
+            />
+            <Route path="/loading" element={<Loading />} />
+            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
+          </Routes>
+        </div>
       </div>
     </Router>
   );
