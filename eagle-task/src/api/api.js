@@ -13,7 +13,7 @@ const BASE_URL = process.env.NODE_ENV === 'production'
  */
 export async function getCoursesWithGradedAssignments(apiKey) {
     try {
-        const response = await axios.post(`${BASE_URL}/get-courses-with-graded-assignments`, {
+        const response = await axios.post(`${BASE_URL}get-courses-with-graded-assignments`, {
             api_key: apiKey
         });
         return response.data.courses_with_graded_assignments; 
