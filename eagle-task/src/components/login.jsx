@@ -36,7 +36,7 @@ export const Login = ({ setLoggedIn }) => {
             <div className="flex flex-col items-center md:w-1/2 md:pr-8 mb-8 md:mb-0">
                 <div className="p-5 rounded-lg border-4 border-[#1E1E1E] bg-[#1E1E1E]">
                     <img
-                        src="/token.gif"
+                        src={`${process.env.PUBLIC_URL}/token.gif`}
                         alt="Token animation"
                         className="w-full h-auto object-contain max-w-[650px]"
                     />
