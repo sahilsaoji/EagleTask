@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Base URL for FastAPI backend
-const BASE_URL = 'http://localhost:8000'; // Update this URL if needed
+const BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://eagletask.onrender.com/' 
+  : 'http://127.0.0.1:8000/';
 
 /**
  * Sends a POST request to the FastAPI backend to retrieve courses and their grades.
