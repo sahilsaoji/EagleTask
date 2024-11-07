@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import './index.css';
 
@@ -31,11 +31,8 @@ function App() {
     setLoggedIn(false); // Update login state to reflect sign-out
   };
 
-  // Set basename based on environment
-  const basename = process.env.NODE_ENV === 'production' ? '/eagletask' : '/';
-
   return (
-    <Router basename={basename}>
+    <Router>
       <div className="App">
         {/* Navbar always shown, with buttons greyed out if not logged in */}
         <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
