@@ -84,7 +84,7 @@ const Tasks = () => {
                         <input
                             type="text"
                             placeholder="Type your message here..."
-                            className="flex-1 p-2 rounded-md border border-gray-400 text-white"
+                            className="flex-1 p-2 rounded-md border border-gray-400 bg-black text-white" // Set background to white and text to black
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleKeyDown}
