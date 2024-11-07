@@ -4,10 +4,10 @@ import axios from 'axios';
 const Grades = () => {
     const [coursesWithGrades, setCoursesWithGrades] = useState([]);
     const [messages, setMessages] = useState([]);
-    const [taskList, setTaskList] = useState([]);
+    //const [taskList, setTaskList] = useState([]);
     const [input, setInput] = useState("");
-    const [isTaskView, setIsTaskView] = useState(true);
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    //const [isTaskView, setIsTaskView] = useState(true);
+    //const [selectedDate, setSelectedDate] = useState(new Date());
 
     useEffect(() => {
         // Retrieve courses with grades from localStorage
