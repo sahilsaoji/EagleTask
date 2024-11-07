@@ -32,7 +32,7 @@ function App() {
   };
 
   return (
-    <Router basename="/eagletask">
+    <Router>
       <div className="App">
         {/* Navbar always shown, with buttons greyed out if not logged in */}
         <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
