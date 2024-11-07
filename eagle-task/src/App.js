@@ -4,11 +4,11 @@ import './App.css';
 import './index.css';
 
 // Import your page components
-import Tasks from './components/Tasks';
-import Dashboard from './components/Dashboard';
-import Grades from './components/Grades';
-import Loading from './components/Loading';
-import Login from './components/Login';
+import Tasks from './components/tasks';
+import Dashboard from './components/dashboard';
+import Grades from './components/grades';
+import Loading from './components/loading';
+import Login from './components/login';
 import Navbar from './components/Navbar';
 
 function App() {
