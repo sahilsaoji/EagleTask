@@ -31,8 +31,11 @@ function App() {
     setLoggedIn(false); // Update login state to reflect sign-out
   };
 
+  // Set basename based on environment
+  const basename = process.env.NODE_ENV === 'production' ? '/eagletask' : '/';
+
   return (
-    <Router basename="/eagletask">
+    <Router basename={basename}>
       <div className="App">
         {/* Navbar always shown, with buttons greyed out if not logged in */}
         <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
