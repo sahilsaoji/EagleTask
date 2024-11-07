@@ -30,38 +30,35 @@ const Grades = () => {
 
     const sendMessage = async (message = input) => {
         if (message.trim() === "") return;
-
+    
         const newMessage = { sender: "user", text: message };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
-
+    
         try {
-            // Send the user's message to the backend
-            const response = await axios.post('http://127.0.0.1:8000/analyze-grades', {
-                prompt: message,
-            });
-
+            // Parse grades from localStorage
+            const grades = JSON.parse(localStorage.getItem('courses_with_graded_assignments'));
+    
+            // Log the payload structure to confirm it matches expectations
+            const payload = { prompt: message, grades: grades };
+            console.log("Payload sent to backend:", payload);
+    
+            // Send the prompt and parsed grades to the backend
+            const response = await axios.post('http://127.0.0.1:8000/analyze-grades', payload);
+    
             const botMessage = {
                 sender: "bot",
                 text: response.data.response,
             };
-
+    
             setMessages((prevMessages) => [...prevMessages, botMessage]);
-
-            // Check if the user is requesting the task list
-            if (message.toLowerCase().includes('generate task list') || message.toLowerCase().includes('show me the task list')) {
-                const tasks = response.data.response
-                    .split("\n")
-                    .map(task => task.trim())
-                    .filter(task => task !== "");
-                setTaskList(tasks);
-            }
-
         } catch (error) {
             console.error("Error with the API request:", error);
         }
-
+    
         setInput("");
     };
+    
+    
 
     const handleKeyDown = (event) => {
         if (event.key === 'Enter') {

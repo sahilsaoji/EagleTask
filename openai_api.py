@@ -1,9 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from typing import Dict
 import openai
 import os
 from dotenv import load_dotenv
 import logging
+from typing import List, Optional, Dict
+
+
+# Set up logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 # Load environment variables
 load_dotenv()
@@ -14,16 +21,31 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Initialize a router
 router = APIRouter()
 
-# Define request and response models
+# Define request and response models for tasks 
 class TaskRequest(BaseModel):
     prompt: str
 
 class TaskResponse(BaseModel):
     response: str
 
-# API endpoint to create a task list based on user input - need to feed in tasks here 
+# Define request and response models for grades
+class Assignment(BaseModel):
+    name: str
+    due_date: Optional[str]  # Use Optional in case the due date is missing
+    points_possible: float
+    submission_score: float
+
+class Course(BaseModel):
+    course_name: str
+    graded_assignments: List[Assignment]
+
+class GradesRequest(BaseModel):
+    prompt: str
+    grades: List[Course]  # Expecting `grades` to be a list of `Course` objects
+
+# Endpoint to create a task list based on user input
 @router.post("/create-tasks", response_model=TaskResponse)
-async def create_task_list(request: TaskRequest):
+async def generate_task_list(request: TaskRequest):
     """Creates a task list from the user's prompt using the OpenAI API."""
     try:
         # Instructions for the assistant
@@ -33,9 +55,9 @@ async def create_task_list(request: TaskRequest):
             "Currently you do not have functionality yet to actually see tasks, and you should let the student know this, and tell them what you will eventually be able to do!"
         )
         
-        # Make the correct OpenAI ChatCompletion API call
+        # Make the OpenAI API call
         response = openai.chat.completions.create(
-            model="gpt-4o-mini",  # Use gpt-4o-mini as specified
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": assistant_instructions},
                 {"role": "user", "content": request.prompt}
@@ -43,29 +65,34 @@ async def create_task_list(request: TaskRequest):
             max_tokens=150
         )
 
-        # Access the response content using dot notation
+        # Access the response content
         reply = response.choices[0].message.content.strip()
         return TaskResponse(response=reply)
 
     except Exception as e:
-        logging.error("Error in create_task_list: %s", str(e))
+        logger.error("Error in generate_task_list: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
 
-# API endpoint to analyze grades for a class 
+# Endpoint to analyze grades and provide recommendations
 @router.post("/analyze-grades", response_model=TaskResponse)
-async def create_task_list(request: TaskRequest):
-    """Creates a task list from the user's prompt using the OpenAI API."""
+async def analyze_grades(request: GradesRequest):
+    logger.info(f"Received request: {request.dict()}")  # Log the request content
     try:
-        # Instructions for the assistant
+        # Prepare the instructions for the assistant
         assistant_instructions = (
-            "You are a helpful assistant designed to provide analyses on a students current grades and where they are doing well and where they have opportunities for improvement. "
-            "Break down grades by class and offer an analysis of the student's performance and reccoemndations for improvement. "   
-            "Currently you do not have functionality yet to actually see grades, and you should let the student know this, and tell them what you will eventually be able to do!"
+            "You are a helpful assistant that provides analysis on a student's grades, "
+            "Showing areas of strength and where improvement is needed. Break down grades by course and provide recommendations.\n\n"
+            "Here are the user's current grades and enrolled courses:\n"
+            f"{request.grades}\n\n"
+            "Now, based on the user's prompt, provide some analysis and recommendations."
+            "DO NOT: Provide any markdown code, only plain text"
+            "DO NOT: Simply repeat a users grades, they can already see them in the UI"
+            "DO: Provide actionable advice and recommendations for improvement, and deep analysis of performance"
         )
         
-        # Make the correct OpenAI ChatCompletion API call
+        # Make the OpenAI API call
         response = openai.chat.completions.create(
-            model="gpt-4o-mini",  # Use gpt-4o-mini as specified
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": assistant_instructions},
                 {"role": "user", "content": request.prompt}
@@ -73,10 +100,11 @@ async def create_task_list(request: TaskRequest):
             max_tokens=150
         )
 
-        # Access the response content using dot notation
+        # Access the assistant's reply
         reply = response.choices[0].message.content.strip()
         return TaskResponse(response=reply)
 
     except Exception as e:
-        logging.error("Error in create_task_list: %s", str(e))
+        logger.error("Error in analyze_grades: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
+
