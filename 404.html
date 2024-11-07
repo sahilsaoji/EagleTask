@@ -1,9 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        /* Basic reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Fullscreen centered container */
+        body, html {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #D9D9D9;
+            font-family: Arial, sans-serif;
+            color: #1E1E1E;
+            text-align: center;
+        }
+
+        /* Spinner styling */
+        .spinner {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(0, 0, 0, 0.1);
+            border-top-color: #BC9B6A;
+            border-radius: 50%;
+            animation: spin 1s ease infinite;
+            margin-bottom: 20px;
+        }
+
+        /* Spinner animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message styling */
+        .message {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
     <meta http-equiv="refresh" content="0; URL='/eagletask/#/'" />
 </head>
 <body>
-    <p>If you are not redirected, <a href="/eagletask/#/">click here</a>.</p>
+    <div>
+        <!-- Loading spinner -->
+        <div class="spinner"></div>
+
+        <!-- Loading message -->
+        <p class="message">Redirecting...</p>
+        <p>If you are not redirected, <a href="/eagletask/#/">click here</a>.</p>
+    </div>
 </body>
 </html>
