@@ -97,12 +97,10 @@ async def analyze_grades(request: GradesRequest):
                 {"role": "system", "content": assistant_instructions},
                 {"role": "user", "content": request.prompt}
             ],
-            max_tokens=150
         )
 
         # Access the assistant's reply
-        reply = response.choices[0].message.content
-        logger.info(f"Generated response: {reply}")
+        reply = response.choices[0].message.content.strip()
         return TaskResponse(response=reply)
 
     except Exception as e:
