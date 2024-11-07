@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { getCoursesWithGradedAssignments } from '../api/api';
 import Loading from './Loading';
+import { useNavigate } from 'react-router-dom';
 
-export const Login = () => {
+export const Login = ({ setLoggedIn }) => {
     const [api_key, setApiKey] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -14,7 +16,8 @@ export const Login = () => {
             const coursesWithGrades = await getCoursesWithGradedAssignments(api_key);
             localStorage.setItem('api_key', api_key);
             localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
-            window.location.href = '/';
+            setLoggedIn(true); // Update the login state after setting localStorage
+            navigate('/'); // Navigate to the dashboard after login
         } catch (err) {
             console.error("Login failed:", err);
             setError("Failed to retrieve data. Please check your API key and try again.");
@@ -43,7 +46,6 @@ export const Login = () => {
                     Then copy down the access token.
                 </p>
             </div>
-
 
             {/* Right side with form */}
             <div className="bg-[#1E1E1E] rounded-lg shadow-xl p-8 w-full max-w-md md:w-1/2 flex flex-col">

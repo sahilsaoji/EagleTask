@@ -15,11 +15,16 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
+    // Check if user is logged in by looking for stored courses with grades in localStorage
     setLoggedIn(!!localStorage.getItem('courses_with_graded_assignments'));
   }, []);
 
   // Function to check if the user is logged in
-  const isLoggedIn = () => !!localStorage.getItem('courses_with_graded_assignments');
+  const isLoggedIn = () => {
+    const loggedInStatus = !!localStorage.getItem('courses_with_graded_assignments');
+    console.log("Is user logged in:", loggedInStatus); // Debug log to verify login status
+    return loggedInStatus;
+  };
 
   const handleSignOut = () => {
     localStorage.clear();
@@ -27,11 +32,11 @@ function App() {
   };
 
   return (
-    <Router>
+    <Router basename="/eagletask">
       <div className="App">
         {/* Navbar always shown, with buttons greyed out if not logged in */}
         <Navbar isLoggedIn={loggedIn} onSignOut={handleSignOut} />
-
+        
         {/* Route Definitions */}
         <Routes>
           <Route 
@@ -47,7 +52,7 @@ function App() {
             element={isLoggedIn() ? <Grades /> : <Navigate to="/login" />} 
           />
           <Route path="/loading" element={<Loading />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
         </Routes>
       </div>
     </Router>
