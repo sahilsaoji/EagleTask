@@ -5,6 +5,9 @@ const Loading = () => {
     { text: 'Fetching your courses 📚', delay: 1000 },
     { text: 'Fetching your assignments 📝', delay: 2000 },
     { text: 'Grabbing grades 📊', delay: 3000 },
+    { text: 'Analyzing your grades 🧐', delay: 4000 },
+    { text: 'Creating your task list ✅', delay: 5000 },
+    { text: 'Almost there! 🚀', delay: 6000 },
   ];
 
   const [currentMessage, setCurrentMessage] = useState(messages[0].text);

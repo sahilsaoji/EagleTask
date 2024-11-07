@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { createTaskList } from '../api/api';
 //Need to pull the canvas api
 
 const Tasks = () => {
@@ -18,10 +19,8 @@ const Tasks = () => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
         try {
-            // Send the user's message to the backend
-            const response = await axios.post('http://127.0.0.1:8000/create-tasks', {
-                prompt: message,
-            });
+            // Use createTaskList to send the user's message to the backend
+            const response = await createTaskList(message);
 
             const botMessage = {
                 sender: "bot",
@@ -41,7 +40,7 @@ const Tasks = () => {
             }
 
         } catch (error) {
-            console.error("Error with the OpenAI API request:", error);
+            console.error("Error creating task list:", error);
         }
 
         setInput("");

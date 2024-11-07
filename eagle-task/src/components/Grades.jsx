@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { analyzeGrades } from '../api/api';
 
 const Grades = () => {
     const [coursesWithGrades, setCoursesWithGrades] = useState([]);
@@ -35,24 +35,20 @@ const Grades = () => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
     
         try {
-            // Parse grades from localStorage
             const grades = JSON.parse(localStorage.getItem('courses_with_graded_assignments'));
-    
-            // Log the payload structure to confirm it matches expectations
-            const payload = { prompt: message, grades: grades };
-            console.log("Payload sent to backend:", payload);
-    
-            // Send the prompt and parsed grades to the backend
-            const response = await axios.post('http://127.0.0.1:8000/analyze-grades', payload);
-    
+            console.log("Payload sent to backend:", { prompt: message, grades: grades });
+
+            // Use analyzeGrades to send the prompt and parsed grades to the backend
+            const response = await analyzeGrades(message, grades);
+            
             const botMessage = {
                 sender: "bot",
-                text: response.data.response,
+                text: response,
             };
     
             setMessages((prevMessages) => [...prevMessages, botMessage]);
         } catch (error) {
-            console.error("Error with the API request:", error);
+            console.error("Error analyzing grades:", error);
         }
     
         setInput("");
