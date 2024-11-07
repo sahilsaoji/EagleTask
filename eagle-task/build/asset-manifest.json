@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/eagletask/static/css/main.69991c1d.css",
-    "main.js": "/eagletask/static/js/main.3e4df2ca.js",
+    "main.js": "/eagletask/static/js/main.ea56c128.js",
     "index.html": "/eagletask/index.html",
     "main.69991c1d.css.map": "/eagletask/static/css/main.69991c1d.css.map",
-    "main.3e4df2ca.js.map": "/eagletask/static/js/main.3e4df2ca.js.map"
+    "main.ea56c128.js.map": "/eagletask/static/js/main.ea56c128.js.map"
   },
   "entrypoints": [
     "static/css/main.69991c1d.css",
-    "static/js/main.3e4df2ca.js"
+    "static/js/main.ea56c128.js"
   ]
 }
