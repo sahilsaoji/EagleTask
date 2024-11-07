@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Base URL for FastAPI backend
 const BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://eagletask.onrender.com/' 
+  ? 'https://eagletask.onrender.com' 
   : 'http://127.0.0.1:8000/';
 
 /**
