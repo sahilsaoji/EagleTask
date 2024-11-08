@@ -10,6 +10,7 @@ import Grades from './components/Grades';
 import Loading from './components/Loading';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+import Support from './components/Support';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -47,6 +48,10 @@ function App() {
             <Route
               path="/grades"
               element={isLoggedIn() ? <Grades /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/support"
+              element={isLoggedIn() ? <Support /> : <Navigate to="/login" />}
             />
             <Route path="/loading" element={<Loading />} />
             <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />

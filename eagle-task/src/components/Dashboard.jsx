@@ -13,7 +13,7 @@ const Dashboard = () => {
           <div className="bg-[#7B313C] text-white p-6 rounded-2xl shadow-md flex flex-col items-center">
             <h2 className="text-2xl font-semibold mb-2">Tasks</h2>
             <p className="text-center text-[#D9D9D9] mb-4 flex-grow">
-              Organize what you need to do and receive quality advice
+              Organize what your upcoming deliverables and deadlines with advice on how to tackle them
             </p>
             <Link to="/tasks">
               <button className="bg-[#BC9B6A] text-white py-3 px-8 rounded-full font-semibold flex items-center justify-center transition-transform duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#7B313C]">
@@ -35,13 +35,13 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          {/* Resources Card */}
+          {/* Support Card */}
           <div className="bg-[#7B313C] text-white p-6 rounded-2xl shadow-md flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-2">Resources</h2>
+            <h2 className="text-2xl font-semibold mb-2">Support</h2>
             <p className="text-center text-[#D9D9D9] mb-4 flex-grow">
-              Academic and wellness resources for Boston College students
+              Get tailored advice on academic, mental, and physical health resources specifically at Boston College
             </p>
-            <Link to="https://www.bc.edu/bc-web/campus-life/health-wellness.html" target="_blank" rel="noopener noreferrer">
+            <Link to="/support" target="_blank" rel="noopener noreferrer">
               <button className="bg-[#BC9B6A] text-white py-3 px-8 rounded-full font-semibold flex items-center justify-center transition-transform duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#7B313C]">
                 <span className="mr-2">&rarr;</span>
               </button>
@@ -52,7 +52,7 @@ const Dashboard = () => {
           <div className="bg-[#7B313C] text-white p-6 rounded-2xl shadow-md flex flex-col items-center">
             <h2 className="text-2xl font-semibold mb-2">Grades</h2>
             <p className="text-center text-[#D9D9D9] mb-4 flex-grow">
-              A comprehensive look at the score you've received so far
+              A comprehensive look at what scores you have recieved so far and how you can improve
             </p>
             <Link to="/grades">
               <button className="bg-[#BC9B6A] text-white py-3 px-8 rounded-full font-semibold flex items-center justify-center transition-transform duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#7B313C]">

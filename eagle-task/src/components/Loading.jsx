@@ -11,7 +11,7 @@ const Loading = () => {
   ];
 
   const [showProgressBar, setShowProgressBar] = useState(true);
-  const [currentMessage, setCurrentMessage] = useState('Spooling up API, this may take a bit! ⚙️');
+  const [currentMessage, setCurrentMessage] = useState('Spooling up our backend, this may take a bit! ⚙️');
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {

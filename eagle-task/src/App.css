@@ -40,4 +40,15 @@
   }
 }
 
+/* Ensure the main content does not overlap with the navbar */
+.main-content-wrapper.with-navbar {
+  padding-top: 80px; /* Adjust for the navbar height */
+  min-height: calc(100vh - 80px); /* Full height minus the navbar height */
+  overflow-y: auto; /* Allow scrolling if content exceeds available height */
+}
+
+/* Optional: Add some padding around the main content */
+.main-content-wrapper {
+  padding: 20px;
+}
 

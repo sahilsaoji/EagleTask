@@ -67,11 +67,11 @@ const Grades = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#D9D9D9] text-white">
+        <div className="flex min-h-screen bg-[#D9D9D9] text-white overflow-auto">
             {/* Main Content */}
             <div className="flex-1 p-6 flex gap-6">
                 {/* Grades Section */}
-                <div className="w-1/2 bg-[#1E1E1E] rounded-lg p-6">
+                <div className="w-1/2 bg-[#1E1E1E] rounded-lg p-6 max-h-[80vh]">
                 <h1 className="text-3xl font-semibold text-center mb-6">Grades</h1>
                 <div className="space-y-4">
                     {coursesWithGrades.map((course, index) => (
@@ -116,7 +116,7 @@ const Grades = () => {
                 </div>
 
                 {/* Chat with AI Section */}
-                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col h-screen">
+                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
                 <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Chat With AI</h1>
                 <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (

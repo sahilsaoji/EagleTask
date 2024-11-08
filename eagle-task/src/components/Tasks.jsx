@@ -57,7 +57,7 @@ const Tasks = () => {
         <div className="flex min-h-screen bg-[#F5F5F5] text-gray-900">
             <div className="flex-1 p-6 flex gap-6">
                 {/* Chat Section */}
-                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col h-screen">
+                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
                     <h1 className="text-3xl font-semibold text-center mb-6">Chat With AI</h1>
                     <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                         {messages.map((msg, index) => (
@@ -105,7 +105,7 @@ const Tasks = () => {
                 </div>
 
                 {/* Task List / Calendar Section with Toggle */}
-                <div className="w-1/2 bg-white shadow-md rounded-lg p-6">
+                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 max-h-[80vh]">
                     <div className="flex justify-between items-center mb-6">
                         <h1 className="text-3xl font-semibold">{isTaskView ? "Task List" : "Calendar"}</h1>
                         <button

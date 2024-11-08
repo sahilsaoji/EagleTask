@@ -68,6 +68,14 @@ function Navbar({ isLoggedIn, onSignOut }) {
               Tasks
             </button>
           </li>
+          <li>
+            <button
+              onClick={() => handleProtectedClick('/support')}
+              className="hover:text-gray-300 transition"
+            >
+              Support
+            </button>
+          </li>
         </ul>
 
         {/* Right-aligned Sign Out Button */}
