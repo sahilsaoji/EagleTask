@@ -5,8 +5,7 @@ import openai
 import os
 from dotenv import load_dotenv
 import logging
-from typing import List, Optional, Dict
-
+from typing import List, Optional
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -21,7 +20,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Initialize a router
 router = APIRouter()
 
-# Define request and response models for tasks 
+# Define request and response models for tasks
 class TaskRequest(BaseModel):
     prompt: str
 
@@ -31,7 +30,7 @@ class TaskResponse(BaseModel):
 # Define request and response models for grades
 class Assignment(BaseModel):
     name: str
-    due_date: Optional[str]  # Use Optional in case the due date is missing
+    due_date: Optional[str]
     points_possible: float
     submission_score: float
 
@@ -41,32 +40,61 @@ class Course(BaseModel):
 
 class GradesRequest(BaseModel):
     prompt: str
-    grades: List[Course]  # Expecting `grades` to be a list of `Course` objects
+    grades: List[Course]
+
+# Chat histories
+chat_history_tasks = []
+chat_history_grades = {}
+
+# Helper function to initialize chat history for grades
+def initialize_grades_history(user_id: str, grades: List[Course]):
+    if user_id not in chat_history_grades:
+        grades_summary = "\n".join(
+            f"Course: {course.course_name}\n" +
+            "\n".join(
+                f"Assignment: {assignment.name}, Score: {assignment.submission_score}/{assignment.points_possible}"
+                for assignment in course.graded_assignments
+            )
+            for course in grades
+        )
+        chat_history_grades[user_id] = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a helpful assistant analyzing a student's grades. Here are the user's current grades and enrolled courses:\n"
+                    f"{grades_summary}\n"
+                )
+            }
+        ]
 
 # Endpoint to create a task list based on user input
 @router.post("/create-tasks", response_model=TaskResponse)
 async def generate_task_list(request: TaskRequest):
-    """Creates a task list from the user's prompt using the OpenAI API."""
     try:
-        # Instructions for the assistant
         assistant_instructions = (
             "You are a helpful assistant designed to create organized task lists for students based on their assignments or workload. "
             "Break down tasks into actionable steps with priorities and deadlines where possible."
             "Currently you do not have functionality yet to actually see tasks, and you should let the student know this, and tell them what you will eventually be able to do!"
         )
         
+        # Initialize chat history if it's empty
+        if not chat_history_tasks:
+            chat_history_tasks.append({"role": "system", "content": assistant_instructions})
+        
+        # Append user prompt to chat history
+        chat_history_tasks.append({"role": "user", "content": request.prompt})
+
         # Make the OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": assistant_instructions},
-                {"role": "user", "content": request.prompt}
-            ],
+            messages=chat_history_tasks,
             max_tokens=150
         )
 
-        # Access the response content
+        # Append assistant response to chat history
         reply = response.choices[0].message.content.strip()
+        chat_history_tasks.append({"role": "assistant", "content": reply})
+
         return TaskResponse(response=reply)
 
     except Exception as e:
@@ -76,34 +104,28 @@ async def generate_task_list(request: TaskRequest):
 # Endpoint to analyze grades and provide recommendations
 @router.post("/analyze-grades", response_model=TaskResponse)
 async def analyze_grades(request: GradesRequest):
-    logger.info(f"Received request: {request.dict()}")  # Log the request content
+    user_id = "default_user"  # Replace this with user-specific identification if available
+    logger.info(f"Received request: {request.model_dump()}")
+
     try:
-        # Prepare the instructions for the assistant
-        assistant_instructions = (
-            "You are a helpful assistant that provides analysis on a student's grades, "
-            "Showing areas of strength and where improvement is needed. Break down grades by course and provide recommendations.\n\n"
-            "Here are the user's current grades and enrolled courses:\n"
-            f"{request.grades}\n\n"
-            "Now, based on the user's prompt, provide some analysis and recommendations."
-            "DO NOT: Provide any markdown code, only plain text"
-            "DO NOT: Simply repeat a users grades, they can already see them in the UI"
-            "DO: Provide actionable advice and recommendations for improvement, and deep analysis of performance"
-        )
-        
+        # Initialize grades chat history if not already done
+        initialize_grades_history(user_id, request.grades)
+
+        # Append user prompt to chat history
+        chat_history_grades[user_id].append({"role": "user", "content": request.prompt})
+
         # Make the OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": assistant_instructions},
-                {"role": "user", "content": request.prompt}
-            ],
+            messages=chat_history_grades[user_id],
         )
 
-        # Access the assistant's reply
+        # Append assistant response to chat history
         reply = response.choices[0].message.content.strip()
+        chat_history_grades[user_id].append({"role": "assistant", "content": reply})
+
         return TaskResponse(response=reply)
 
     except Exception as e:
         logger.error("Error in analyze_grades: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
-
