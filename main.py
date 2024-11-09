@@ -14,7 +14,7 @@ app = FastAPI()
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # CORS setup
-'''
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
@@ -22,8 +22,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "Accept"],
 )
-'''
 
+'''
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Change this to your frontend URL in production
@@ -31,6 +31,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+'''
 
 # Include the OpenAI router
 app.include_router(openai_router)
