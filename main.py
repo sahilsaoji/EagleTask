@@ -14,7 +14,7 @@ app = FastAPI()
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # CORS setup
-
+'''
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
@@ -32,7 +32,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-'''
 # Include the OpenAI router
 app.include_router(openai_router)
 
@@ -79,8 +78,24 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
         logging.error("Failed to fetch courses and graded assignments", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
-# API endpoint to fetch upcoming assignments for Tasks 
+# API endpoint to fetch upcoming assignments for Tasks - assignments due in next 2 weeks 
+@app.post("/get-upcoming-assignments")
+async def get_upcoming_assignments(data: CanvasAPIKey, date: str):
+    # Get the current date 
+    pass
+
+        
 
 
-# API endpoint to fetch calendar for each course 
+# API endpoint to fetch calendar for each course (.ics file) for Calendar Page
+@app.post("/get-course-calendars")
+async def get_course_calendars(data: CanvasAPIKey):
+    logging.info(f"Fetching course calendars for API Key: {data.api_key}")
+    try: 
+        calendar = canvas_api.get_calendar(data.api_key)
+        return {"calendar": calendar}
+    except Exception as e:
+        logging.error("Failed to fetch course calendars", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e)) 
+        
 

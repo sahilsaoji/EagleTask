@@ -60,3 +60,21 @@ export async function analyzeGrades(message, grades) {
         throw error;
     }
 }
+
+/** 
+ * Get a calendar for a user from Canvas
+ * 
+ * @param {string} apiKey - The user's Canvas API key.
+ */
+
+export async function getCalendar(apiKey) {
+    try {
+        const response = await axios.post(`${BASE_URL}/get-calendar`, {
+            api_key: apiKey
+        });
+        return response.data.calendar;
+    } catch (error) {
+        console.error("Error fetching calendar:", error);
+        throw error;
+    }
+}

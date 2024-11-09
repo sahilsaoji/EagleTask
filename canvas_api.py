@@ -1,5 +1,7 @@
 from canvasapi import Canvas, exceptions
 import logging
+from datetime import datetime, timedelta
+
 
 # Base URL for Canvas API
 BASE_URL = "https://bostoncollege.instructure.com"
@@ -40,7 +42,6 @@ def get_courses(api_key: str):
         logger.error(f"Error fetching courses: {str(e)}", exc_info=True)
         raise
 
-
 # Get all the graded assignments for a user 
 def get_graded_assignments(api_key: str, course_id: int):
     """Fetches graded assignments for a specific course."""
@@ -77,6 +78,7 @@ def get_graded_assignments(api_key: str, course_id: int):
         logger.error(f"Error fetching graded assignments for course ID {course_id}: {str(e)}", exc_info=True)
         return []  # Return an empty list on any other exception
 
+# Get all courses and their graded assignments for a user
 def get_courses_with_graded_assignments(api_key: str):
     """Fetches courses and their graded assignments, handling access errors."""
     courses = get_courses(api_key)
@@ -88,7 +90,57 @@ def get_courses_with_graded_assignments(api_key: str):
     
     return all_graded_assignments
 
-# Additional functionality to get a user's upcoming assignments 
+# Get a user's calendar for their account 
+def get_calendar(api_key: str):
+    """Fetches the user's calendar events for assignments due in the next two weeks."""
+    logger.info("Fetching user's calendar events for assignments due in the next two weeks")
 
-# Additional functionality to get course calendar events (.ics format)
-        
+    try:
+        # Initialize the Canvas instance
+        canvas = get_canvas_instance(api_key)
+
+        # Get the current user
+        user = canvas.get_current_user()
+
+        # Calculate start and end dates
+        start_date = datetime.now().isoformat()
+        end_date = (datetime.now() + timedelta(days=14)).isoformat()
+
+        # Fetch calendar events for the user
+        calendar_events = canvas.get_calendar_events(
+            type='assignment',
+            start_date=start_date,
+            end_date=end_date,
+            context_codes=['user_{}'.format(user.id)],
+            all_events=True
+        )
+
+        # Convert the PaginatedList to a list of event details
+        events = []
+        for event in calendar_events:
+            if hasattr(event, 'assignment'):
+                events.append({
+                    "title": event.title,
+                    "start_at": event.start_at,
+                    "end_at": event.end_at,
+                    "context_name": event.context_name,
+                    "html_url": event.html_url,
+                    "assignment": {
+                        "id": event.assignment['id'],
+                        "description": event.assignment.get('description', ''),
+                        "due_at": event.assignment.get('due_at', ''),
+                        "points_possible": event.assignment.get('points_possible', None)
+                    }
+                })
+
+        # Print the events object to the console
+        logger.info(f"Retrieved {len(events)} assignment events for user: {user.name}")
+        logger.info("Sample event structure:")
+        if events:
+            logger.info(events[0])
+
+        return events
+
+    except Exception as e:
+        logger.error(f"Error fetching user's calendar: {str(e)}", exc_info=True)
+        raise
