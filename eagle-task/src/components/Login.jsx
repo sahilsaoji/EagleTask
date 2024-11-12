@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { getCoursesWithGradedAssignments } from '../api/api';
 import Loading from './Loading';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Login = ({ setLoggedIn }) => {
     const [api_key, setApiKey] = useState('');
@@ -55,15 +56,14 @@ export const Login = ({ setLoggedIn }) => {
                             Login
                         </button>
                         <div className="relative w-1/2 group">
+                        <Link to="/help">
                             <button
                                 type="button"
                                 className="w-full py-3 bg-[#555] text-white font-semibold rounded-full hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
                             >
                                 Help
                             </button>
-                            <div className="absolute bottom-full left-0 w-full p-3 text-sm bg-[#333] text-white rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-auto">
-                                Go to "Account ➡️ Settings ➡️ New Access Token" to generate an API key.
-                            </div>
+                        </Link>
                         </div>
                     </div>
                 </form>

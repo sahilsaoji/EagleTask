@@ -11,6 +11,7 @@ import Loading from './components/Loading';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Support from './components/Support';
+import Help from './components/Help';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -54,6 +55,7 @@ function App() {
               element={isLoggedIn() ? <Support /> : <Navigate to="/login" />}
             />
             <Route path="/loading" element={<Loading />} />
+            <Route path="/help" element={<Help />} />
             <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           </Routes>
         </div>
