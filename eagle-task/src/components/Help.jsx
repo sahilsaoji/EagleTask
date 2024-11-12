@@ -63,7 +63,7 @@ const Help = () => {
                                     {index === 4 && (
                                         <>
                                             Your new token will appear on the screen. Copy it carefully—you won't be able to see it again.
-                                            <div className="bg-[#333] p-4 rounded-lg mt-2">
+                                            <div className="bg-[#333] p-4 rounded-lg mt-2 text-white">
                                                 <p className="text-sm">Example Token: <code>12345~abcdEfghIjklMnopQrStuvwxYz</code></p>
                                             </div>
                                         </>
