@@ -2,7 +2,6 @@ from canvasapi import Canvas, exceptions
 import logging
 from datetime import datetime, timedelta
 
-
 # Base URL for Canvas API
 BASE_URL = "https://bostoncollege.instructure.com"
 
@@ -90,10 +89,9 @@ def get_courses_with_graded_assignments(api_key: str):
     
     return all_graded_assignments
 
-# Get a user's calendar for their account 
 def get_calendar(api_key: str):
-    """Fetches the user's calendar events for assignments due in the next two weeks."""
-    logger.info("Fetching user's calendar events for assignments due in the next two weeks")
+    """Fetches all calendar events for the user."""
+    logger.info("Fetching calendar events for the user")
 
     try:
         # Initialize the Canvas instance
@@ -101,46 +99,48 @@ def get_calendar(api_key: str):
 
         # Get the current user
         user = canvas.get_current_user()
+        user_id = user.id
+        logger.info(f"User ID: {user_id}")
 
-        # Calculate start and end dates
-        start_date = datetime.now().isoformat()
-        end_date = (datetime.now() + timedelta(days=14)).isoformat()
+        # Define the date range (e.g., past 30 days to next 30 days)
+        start_date = (datetime.now() - timedelta(days=30)).isoformat()
+        end_date = (datetime.now() + timedelta(days=30)).isoformat()
 
         # Fetch calendar events for the user
-        calendar_events = canvas.get_calendar_events(
-            type='assignment',
+        calendar_events = user.get_calendar_events_for_user(
+            type="event",
             start_date=start_date,
             end_date=end_date,
-            context_codes=['user_{}'.format(user.id)],
             all_events=True
         )
 
-        # Convert the PaginatedList to a list of event details
+        # Convert PaginatedList to a regular list
+        calendar_events_list = list(calendar_events)
+
+        logger.info(f"Fetched {len(calendar_events_list)} events from Canvas")
+
+        # Convert the list of events to a list of event details
         events = []
-        for event in calendar_events:
-            if hasattr(event, 'assignment'):
-                events.append({
-                    "title": event.title,
-                    "start_at": event.start_at,
-                    "end_at": event.end_at,
-                    "context_name": event.context_name,
-                    "html_url": event.html_url,
-                    "assignment": {
-                        "id": event.assignment['id'],
-                        "description": event.assignment.get('description', ''),
-                        "due_at": event.assignment.get('due_at', ''),
-                        "points_possible": event.assignment.get('points_possible', None)
-                    }
-                })
+        for event in calendar_events_list:
+            event_details = {
+                "id": event.id,
+                "title": event.title,
+                "start_at": event.start_at,
+                "end_at": getattr(event, 'end_at', None),
+                "location_name": getattr(event, 'location_name', 'N/A'),
+                "context_name": getattr(event, 'context_name', 'N/A'),
+                "html_url": event.html_url,
+                "description": getattr(event, 'description', 'No description'),
+            }
+            events.append(event_details)
 
-        # Print the events object to the console
-        logger.info(f"Retrieved {len(events)} assignment events for user: {user.name}")
-        logger.info("Sample event structure:")
-        if events:
-            logger.info(events[0])
+            # Log each event's details to the console
+            logger.info(f"Event: {event_details}")
 
+        logger.info(f"Returning {len(events)} events for user: {user.name}")
         return events
 
     except Exception as e:
-        logger.error(f"Error fetching user's calendar: {str(e)}", exc_info=True)
+        logger.error(f"Error fetching user's calendar events: {str(e)}", exc_info=True)
         raise
+

@@ -19,7 +19,7 @@ const Help = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-[80vh] bg-[#7B313C] py-10">
+        <div className="flex flex-col justify-center items-center min-h-screen bg-[#7B313C] py-10">
             <div className="bg-[#1E1E1E] rounded-[40px] shadow-2xl p-10 w-full max-w-3xl text-[#D9D9D9]">
                 <h1 className="text-4xl font-bold text-center text-white mb-8">Generate Your Canvas Access Token</h1>
 

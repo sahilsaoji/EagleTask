@@ -76,6 +76,14 @@ function Navbar({ isLoggedIn, onSignOut }) {
               Support
             </button>
           </li>
+          <li>
+            <button
+              onClick={() => handleProtectedClick('/calendar')}
+              className="hover:text-gray-300 transition"
+            >
+              Calendar
+            </button>
+          </li>
         </ul>
 
         {/* Right-aligned Sign Out Button */}

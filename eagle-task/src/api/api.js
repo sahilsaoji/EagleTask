@@ -66,15 +66,18 @@ export async function analyzeGrades(message, grades) {
  * 
  * @param {string} apiKey - The user's Canvas API key.
  */
-
 export async function getCalendar(apiKey) {
     try {
-        const response = await axios.post(`${BASE_URL}/get-calendar`, {
-            api_key: apiKey
+        const response = await axios.post(`${BASE_URL}/get-course-calendars`, {
+            api_key: apiKey, // Make sure this key matches exactly with the Pydantic model
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
         return response.data.calendar;
     } catch (error) {
-        console.error("Error fetching calendar:", error);
+        console.error("Error fetching calendar:", error.response?.data || error.message);
         throw error;
     }
 }

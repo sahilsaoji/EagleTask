@@ -12,6 +12,7 @@ import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Support from './components/Support';
 import Help from './components/Help';
+import Calendar from './components/Calendar';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -53,6 +54,10 @@ function App() {
             <Route
               path="/support"
               element={isLoggedIn() ? <Support /> : <Navigate to="/login" />}
+            />
+            <Route
+              path="/calendar"
+              element={isLoggedIn() ? <Calendar /> : <Navigate to="/calendar" />}
             />
             <Route path="/loading" element={<Loading />} />
             <Route path="/help" element={<Help />} />
