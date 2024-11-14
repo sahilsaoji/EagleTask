@@ -15,16 +15,13 @@ import Help from './components/Help';
 import Calendar from './components/Calendar';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  // Initialize `loggedIn` from `localStorage` to persist state across reloads
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem('isLoggedIn') === 'true');
 
+  // Update `localStorage` whenever `loggedIn` changes
   useEffect(() => {
-    // Check if user is logged in by looking for stored courses with grades in localStorage
-    setLoggedIn(!!localStorage.getItem('courses_with_graded_assignments'));
-  }, []);
-
-  const isLoggedIn = () => {
-    return !!localStorage.getItem('courses_with_graded_assignments');
-  };
+    localStorage.setItem('isLoggedIn', loggedIn);
+  }, [loggedIn]);
 
   const handleSignOut = () => {
     localStorage.clear();
@@ -41,23 +38,23 @@ function App() {
           <Routes>
             <Route
               path="/"
-              element={isLoggedIn() ? <Dashboard /> : <Navigate to="/login" />}
+              element={loggedIn ? <Dashboard /> : <Navigate to="/login" />}
             />
             <Route
               path="/tasks"
-              element={isLoggedIn() ? <Tasks /> : <Navigate to="/login" />}
+              element={loggedIn ? <Tasks /> : <Navigate to="/login" />}
             />
             <Route
               path="/grades"
-              element={isLoggedIn() ? <Grades /> : <Navigate to="/login" />}
+              element={loggedIn ? <Grades /> : <Navigate to="/login" />}
             />
             <Route
               path="/support"
-              element={isLoggedIn() ? <Support /> : <Navigate to="/login" />}
+              element={loggedIn ? <Support /> : <Navigate to="/login" />}
             />
             <Route
               path="/calendar"
-              element={isLoggedIn() ? <Calendar /> : <Navigate to="/calendar" />}
+              element={loggedIn ? <Calendar /> : <Navigate to="/login" />}
             />
             <Route path="/loading" element={<Loading />} />
             <Route path="/help" element={<Help />} />

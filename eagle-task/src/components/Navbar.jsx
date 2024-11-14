@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FaHome, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -6,12 +6,19 @@ function Navbar({ isLoggedIn, onSignOut }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
+
+  // Sync `loggedIn` state with `localStorage`
+  useEffect(() => {
+    setLoggedIn(localStorage.getItem('isLoggedIn') === 'true');
+  }, [isLoggedIn]);
 
   const handleProtectedClick = (path) => {
-    if (isLoggedIn) {
+    if (loggedIn) {
       navigate(path);
     } else {
       alert("You must log in with your Canvas API key first.");
+      navigate('/login');
     }
   };
 
@@ -20,7 +27,7 @@ function Navbar({ isLoggedIn, onSignOut }) {
   };
 
   // Determine if the navbar should be shown based on the current location
-  const shouldShowNavbar = isLoggedIn && !['/login', '/loading'].includes(location.pathname);
+  const shouldShowNavbar = loggedIn && !['/login', '/loading'].includes(location.pathname);
 
   if (!shouldShowNavbar) {
     return null; // Don't render the navbar if it shouldn't be shown
@@ -87,7 +94,7 @@ function Navbar({ isLoggedIn, onSignOut }) {
         </ul>
 
         {/* Right-aligned Sign Out Button */}
-        {isLoggedIn && (
+        {loggedIn && (
           <button
             onClick={() => {
               onSignOut();
@@ -101,7 +108,7 @@ function Navbar({ isLoggedIn, onSignOut }) {
       </div>
 
       {/* Mobile Sign Out Button */}
-      {isLoggedIn && menuOpen && (
+      {loggedIn && menuOpen && (
         <button
           onClick={() => {
             onSignOut();

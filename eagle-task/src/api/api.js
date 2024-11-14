@@ -81,3 +81,36 @@ export async function getCalendar(apiKey) {
         throw error;
     }
 }
+
+/** 
+ * Send a dummy request to the backend to wake up the server.
+ * Query the base endpoint and wait for the reponse 
+ */
+export async function dummyRequest() {
+    try {
+        const response = await axios.get(`${BASE_URL}/`);
+        return response.data.message; // Updated field
+    } catch (error) {
+        console.error("Error waking up server:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+/**
+ * Sends a POST request to the FastAPI backend to validate the Canvas API key.
+ * 
+ * @param {string} apiKey - The user's Canvas API key.
+ * @returns {Promise<Object>} - A promise that resolves to the validation result.
+ */
+export async function validateApiKey(apiKey) {
+    try {
+        const response = await axios.post(`${BASE_URL}/validate-api-key`, {
+            api_key: apiKey
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error validating API Key:", error.response?.data || error.message);
+        throw error;
+    }
+}
+

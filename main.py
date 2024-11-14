@@ -39,10 +39,23 @@ app.include_router(openai_router)
 class CanvasAPIKey(BaseModel):
     api_key: str
 
+# Root endpoint
 @app.get("/")
 async def root():
     logging.info("Root endpoint accessed")
     return {"message": "Hello, FastAPI!"}
+
+# Validate the api key by creating a new canvas instance with it 
+@app.post("/validate-api-key")
+async def validate_api_key(data: CanvasAPIKey):
+    logging.info(f"Validating API Key: {data.api_key}")
+    try:
+        canvas = canvas_api.get_canvas_instance(data.api_key)
+        user = canvas.get_current_user()
+        return {"message": "API Key is valid", "user": user.id}
+    except Exception as e:
+        logging.error("Failed to validate API Key", exc_info=True)
+        raise HTTPException(status_code=401, detail="Invalid API Key")
 
 # API endpoint to fetch courses and graded assignments for Grades Page 
 @app.post("/get-courses-with-graded-assignments")

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { getCoursesWithGradedAssignments } from '../api/api';
+import React, { useState, useEffect } from 'react';
+import { dummyRequest, validateApiKey } from '../api/api';
 import Loading from './Loading';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -10,18 +10,37 @@ export const Login = ({ setLoggedIn }) => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        // Check if user is logged in and navigate to the dashboard
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            navigate('/');
+        }
+    }, [navigate]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError('');
         try {
-            const coursesWithGrades = await getCoursesWithGradedAssignments(api_key);
-            localStorage.setItem('api_key', api_key);
-            localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
+            // Wake up the server first
+            await dummyRequest();
+
+            // Validate the API key
+            const validationResponse = await validateApiKey(api_key);
+
+            // Save API key and user ID to localStorage
+            localStorage.setItem('canvasApiKey', api_key);
+            localStorage.setItem('userId', validationResponse.user);
+
+            // Set the user as logged in
+            localStorage.setItem('isLoggedIn', 'true');
             setLoggedIn(true);
+
+            // Navigate to the dashboard explicitly
             navigate('/');
         } catch (err) {
             console.error("Login failed:", err);
-            setError("Failed to retrieve data. Please check your API key and try again.");
+            setError("Invalid API Key. Please check your key and try again.");
         } finally {
             setLoading(false);
         }
@@ -56,14 +75,14 @@ export const Login = ({ setLoggedIn }) => {
                             Login
                         </button>
                         <div className="relative w-1/2 group">
-                        <Link to="/help">
-                            <button
-                                type="button"
-                                className="w-full py-3 bg-[#555] text-white font-semibold rounded-full hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
-                            >
-                                Help
-                            </button>
-                        </Link>
+                            <Link to="/help">
+                                <button
+                                    type="button"
+                                    className="w-full py-3 bg-[#555] text-white font-semibold rounded-full hover:bg-[#7B313C] transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#7B313C]"
+                                >
+                                    Help
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </form>
