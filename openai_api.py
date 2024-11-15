@@ -1,7 +1,9 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Dict
 import openai
+import json
 import os
 from dotenv import load_dotenv
 import logging
@@ -26,7 +28,7 @@ class TaskRequest(BaseModel):
     prompt: str
 
 # Define task list request 
-class TaskListRequest(BaseModel)
+class TaskListRequest(BaseModel):
     apiKey: str
 
 class TaskResponse(BaseModel):
@@ -134,23 +136,35 @@ def initialize_support_history(user_id: str):
         ]
 
 # Endpoint to create a task list based on user input
-@router.post("/create-tasks", response_model=TaskResponse)
+@router.post("/create-tasks", response_model=Dict)
 async def generate_task_list(request: TaskListRequest):
-
     try:
         upcoming_tasks = get_upcoming_assignments(request.apiKey)
         assistant_instructions = (
-            '''You are a helpful assistant designed to create organized task lists for students based on their assignments or workload. 
-            Break down tasks into actionable steps with priorities and deadlines where possible."
+            '''You are a helpful assistant designed to create organized task lists for students based on their assignments or workload.
+            Break down tasks into actionable steps with priorities and deadlines where possible.
 
-            You need to break down the upcoming assignments into tasks, and provide a brief description and time estimate for each task.
-            Seperate them with backslash n 
+            You need to break down the upcoming assignments into tasks and provide a brief description and time estimate for each task.
+            
+            Please return a JSON object directly, without wrapping it in code blocks, ie no triple backticks or json keyword.
+            Please return a JSON object in the following format:
+            {
+                "tasks": [
+                    {
+                        "task": "Task name",
+                        "course": "Course name",
+                        "description": "Task description",
+                        "time_estimate": "Estimated time",
+                        "due_date": "Due date"
+                    }
+                ]
+            }
 
-            Here are the upcoming assignments you need to break down into tasks: 
+            Here are the upcoming assignments you need to break down into tasks:
             '''
             f"{upcoming_tasks}"
         )
-        
+
         # Initialize chat history if it's empty
         if not chat_history_tasks:
             chat_history_tasks.append({"role": "system", "content": assistant_instructions})
@@ -161,15 +175,30 @@ async def generate_task_list(request: TaskListRequest):
             messages=chat_history_tasks,
         )
 
-        # Append assistant response to chat history
+        # Extract the assistant's response
         reply = response.choices[0].message.content.strip()
         chat_history_tasks.append({"role": "assistant", "content": reply})
 
-        return TaskResponse(response=reply)
+        # Log the reply
+        logger.info(f"Assistant response: {reply}")
+
+        # Remove markdown code block delimiters if present
+        if reply.startswith("```json") and reply.endswith("```"):
+            reply = reply[7:-3].strip()  # Strip the "```json" and "```"
+
+        # Attempt to parse the cleaned response
+        try:
+            tasks_json = json.loads(reply)
+            return JSONResponse(content=tasks_json)
+        
+        except json.JSONDecodeError:
+            logger.error("Failed to parse assistant response as JSON.")
+            raise HTTPException(status_code=500, detail="Failed to parse response as JSON.")
 
     except Exception as e:
         logger.error("Error in generate_task_list: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
+
 
 # Endpoint to analyze grades and provide recommendations
 @router.post("/analyze-grades", response_model=TaskResponse)

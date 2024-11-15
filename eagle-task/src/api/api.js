@@ -32,14 +32,18 @@ export async function getCoursesWithGradedAssignments(apiKey) {
 export async function createTaskList(apiKey) {
     try {
         const response = await axios.post(`${BASE_URL}/create-tasks`, {
-            api_key: apiKey
+            apiKey: apiKey
         });
-        return response.data.response; 
+        // Parse the response if it's a string
+        const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+        return data;
     } catch (error) {
         console.error("Error creating task list:", error);
         throw error;
     }
 }
+
+
 
 /** 
  * Sends a POST request to analyze the user's grades.

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { createTaskList } from '../api/api';
 import LoadingIndicator from './LoadingIndicator';
+import { FaClock, FaCalendarAlt, FaBook } from "react-icons/fa";
+
 
 const Tasks = () => {
     const [messages, setMessages] = useState([]);
@@ -13,18 +15,30 @@ const Tasks = () => {
     const [loadingResponse, setLoadingResponse] = useState(false);
     const [loadingTasks, setLoadingTasks] = useState(false);
 
+    // Load tasks from local storage
+    useEffect(() => {
+        const storedData = localStorage.getItem('tasks');
+        if (storedData) {
+            setTaskList(JSON.parse(storedData));
+        }
+    }, []);
+
     // Function to refresh tasks
     const refreshTasks = async () => {
         setLoadingTasks(true);
-        setTaskList(["LoadingPage..."]);
+        setTaskList([]);
 
         try {
             const apiKey = localStorage.getItem('canvasApiKey');
             const response = await createTaskList(apiKey);
-            const tasks = response.data.response
-                .split("\n")
-                .map(task => task.trim())
-                .filter(task => task !== "");
+            console.log("Tasks received (parsed):", response);
+
+            // Access the tasks array directly
+            const tasks = response.tasks || [];
+            console.log("Parsed Tasks:", tasks);
+
+            // Add tasks to local storage
+            localStorage.setItem('tasks', JSON.stringify(tasks));
 
             setTaskList(tasks);
         } catch (error) {
@@ -76,6 +90,68 @@ const Tasks = () => {
         setMessages([]);
     };
 
+    const TaskCard = ({ task }) => {
+        // State to track task completion
+        const [isCompleted, setIsCompleted] = useState(false);
+    
+        // Toggle the completion status
+        const handleCheckboxChange = () => {
+            setIsCompleted(!isCompleted);
+        };
+    
+        return (
+            <div
+                className={`relative bg-[#7B313C] p-6 rounded-xl text-white shadow-lg hover:shadow-xl transition-shadow duration-300 ${
+                    isCompleted ? "opacity-50 line-through" : ""
+                }`}
+            >
+                {/* Completion Checkbox */}
+                <input
+                    type="checkbox"
+                    className="absolute top-4 right-4 w-5 h-5 cursor-pointer"
+                    checked={isCompleted}
+                    onChange={handleCheckboxChange}
+                />
+    
+                {/* Assignment Name (Centered) */}
+                <h2 className="text-xl font-bold text-center mb-4">{task.task}</h2>
+    
+                {/* Two-Column Layout */}
+                <div className="grid grid-cols-3 gap-4">
+                    {/* Left Column (1/3 width) */}
+                    <div className="col-span-1 flex flex-col gap-4">
+                        {/* Course Name */}
+                        <div className="flex items-center text-sm">
+                            <FaBook className="mr-2 text-white" />
+                            <p>{task.course}</p>
+                        </div>
+    
+                        {/* Time Estimate */}
+                        <div className="flex items-center text-sm">
+                            <FaClock className="mr-2 text-white" />
+                            <span>Time Estimate:</span>
+                            <span className="ml-1 font-medium">{task.time_estimate}</span>
+                        </div>
+    
+                        {/* Due Date */}
+                        <div className="flex items-center text-sm">
+                            <FaCalendarAlt className="mr-2 text-white" />
+                            <span>Due:</span>
+                            <span className="ml-1">{new Date(task.due_date).toLocaleString()}</span>
+                        </div>
+                    </div>
+    
+                    {/* Right Column (2/3 width) */}
+                    <div className="col-span-2">
+                        <p className="text-sm mb-4">{task.description}</p>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+    
+
+
     return (
         <div className="flex flex-col md:flex-row min-h-screen bg-[#D9D9D9] p-4 gap-4">
             {/* Task List / Calendar Section */}
@@ -104,12 +180,7 @@ const Tasks = () => {
                         ) : taskList.length > 0 ? (
                             <ul className="space-y-4">
                                 {taskList.map((task, index) => (
-                                    <li
-                                        key={index}
-                                        className="bg-[#1E1E1E] p-4 rounded-lg border border-[#7B313C] text-white"
-                                    >
-                                        <span className="font-medium">{task}</span>
-                                    </li>
+                                    <TaskCard key={index} task={task} />
                                 ))}
                             </ul>
                         ) : (
@@ -134,7 +205,7 @@ const Tasks = () => {
 
             {/* Chat Section */}
             <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
-            <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Tasks Chat</h1>
+                <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Tasks Chat</h1>
                 <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (
                         <div

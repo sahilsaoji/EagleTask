@@ -1,6 +1,7 @@
 from canvasapi import Canvas, exceptions
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from dateutil import parser
 
 # Base URL for Canvas API
 BASE_URL = "https://bostoncollege.instructure.com"
@@ -89,7 +90,7 @@ def get_courses_with_graded_assignments(api_key: str):
     
     return all_graded_assignments
 
-# Get all upcoming assignments due in the next two weeks for the user 
+# Get all the upcoming assignments due in the next two weeks
 def get_upcoming_assignments(api_key: str):
     """Fetches upcoming assignments due in the next two weeks."""
     logger.info("Fetching upcoming assignments due in the next two weeks")
@@ -98,8 +99,11 @@ def get_upcoming_assignments(api_key: str):
         user = canvas.get_current_user()
         courses = user.get_courses()
 
-        # Define the date range for upcoming assignments
-        today = datetime.now()
+        # Parse courses
+        courses = [course for course in courses if getattr(course, 'enrollment_term_id', None) == 7109]
+
+        # Define the date range for upcoming assignments (make them timezone-aware)
+        today = datetime.now(timezone.utc)
         two_weeks_later = today + timedelta(days=14)
 
         upcoming_assignments = []
@@ -107,16 +111,20 @@ def get_upcoming_assignments(api_key: str):
         for course in courses:
             assignments = course.get_assignments()
             for assignment in assignments:
-                if assignment.due_at and today <= assignment.due_at <= two_weeks_later:
-                    upcoming_assignments.append({
-                        "course_name": course.name,
-                        "assignment_name": assignment.name,
-                        "due_date": assignment.due_at
-                    })
+                if assignment.due_at:
+                    # Parse the due_at date string to an aware datetime object
+                    due_date = parser.parse(assignment.due_at)
+
+                    # Compare the parsed due date with today and two weeks later
+                    if today <= due_date <= two_weeks_later:
+                        upcoming_assignments.append({
+                            "course_name": course.name,
+                            "assignment_name": assignment.name,
+                            "due_date": due_date.strftime("%Y-%m-%d %H:%M:%S %Z")
+                        })
 
         logger.info(f"Retrieved {len(upcoming_assignments)} upcoming assignments due in the next two weeks")
         return upcoming_assignments
     except Exception as e:
         logger.error(f"Error fetching upcoming assignments: {str(e)}", exc_info=True)
         raise
-    
