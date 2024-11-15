@@ -15,10 +15,10 @@ const Support = () => {
         { name: "Career Center", description: "Career guidance and internship/job search help." },
     ];
 
-    // Auto-scroll to the latest message
     useEffect(() => {
-        if (chatEndRef.current) {
-            chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        // Only auto-scroll if there are messages
+        if (messages.length > 0 && chatEndRef.current) {
+            chatEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     }, [messages]);
 
