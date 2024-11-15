@@ -26,13 +26,13 @@ export async function getCoursesWithGradedAssignments(apiKey) {
 /**
  * Sends a POST request to the FastAPI backend to create a task list for the user.
  * 
- * @param {string} prompt - The prompt or message input for task creation.
+ * @param {string} apiKey - The user's Canvas API key.
  * @returns {Promise<Object>} - A promise that resolves to the created task list.
  */
-export async function createTaskList(prompt) {
+export async function createTaskList(apiKey) {
     try {
         const response = await axios.post(`${BASE_URL}/create-tasks`, {
-            prompt: prompt
+            api_key: apiKey
         });
         return response.data.response; 
     } catch (error) {

@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 import logging
 from typing import List, Optional
+from canvas_api import get_upcoming_assignments
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -23,6 +24,10 @@ router = APIRouter()
 # Define request and response models for tasks
 class TaskRequest(BaseModel):
     prompt: str
+
+# Define task list request 
+class TaskListRequest(BaseModel)
+    apiKey: str
 
 class TaskResponse(BaseModel):
     response: str
@@ -127,28 +132,33 @@ def initialize_support_history(user_id: str):
                 )
             }
         ]
+
 # Endpoint to create a task list based on user input
 @router.post("/create-tasks", response_model=TaskResponse)
-async def generate_task_list(request: TaskRequest):
+async def generate_task_list(request: TaskListRequest):
+
     try:
+        upcoming_tasks = get_upcoming_assignments(request.apiKey)
         assistant_instructions = (
-            "You are a helpful assistant designed to create organized task lists for students based on their assignments or workload. "
-            "Break down tasks into actionable steps with priorities and deadlines where possible."
-            "Currently you do not have functionality yet to actually see tasks, and you should let the student know this, and tell them what you will eventually be able to do!"
+            '''You are a helpful assistant designed to create organized task lists for students based on their assignments or workload. 
+            Break down tasks into actionable steps with priorities and deadlines where possible."
+
+            You need to break down the upcoming assignments into tasks, and provide a brief description and time estimate for each task.
+            Seperate them with backslash n 
+
+            Here are the upcoming assignments you need to break down into tasks: 
+            '''
+            f"{upcoming_tasks}"
         )
         
         # Initialize chat history if it's empty
         if not chat_history_tasks:
             chat_history_tasks.append({"role": "system", "content": assistant_instructions})
-        
-        # Append user prompt to chat history
-        chat_history_tasks.append({"role": "user", "content": request.prompt})
 
         # Make the OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
             messages=chat_history_tasks,
-            max_tokens=150
         )
 
         # Append assistant response to chat history
@@ -218,3 +228,4 @@ async def chat_with_support(request: TaskRequest):
     except Exception as e:
         logger.error("Error in chat_with_support: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
+    

@@ -88,3 +88,35 @@ def get_courses_with_graded_assignments(api_key: str):
         all_graded_assignments[course.id] = graded_assignments
     
     return all_graded_assignments
+
+# Get all upcoming assignments due in the next two weeks for the user 
+def get_upcoming_assignments(api_key: str):
+    """Fetches upcoming assignments due in the next two weeks."""
+    logger.info("Fetching upcoming assignments due in the next two weeks")
+    try:
+        canvas = get_canvas_instance(api_key)
+        user = canvas.get_current_user()
+        courses = user.get_courses()
+
+        # Define the date range for upcoming assignments
+        today = datetime.now()
+        two_weeks_later = today + timedelta(days=14)
+
+        upcoming_assignments = []
+
+        for course in courses:
+            assignments = course.get_assignments()
+            for assignment in assignments:
+                if assignment.due_at and today <= assignment.due_at <= two_weeks_later:
+                    upcoming_assignments.append({
+                        "course_name": course.name,
+                        "assignment_name": assignment.name,
+                        "due_date": assignment.due_at
+                    })
+
+        logger.info(f"Retrieved {len(upcoming_assignments)} upcoming assignments due in the next two weeks")
+        return upcoming_assignments
+    except Exception as e:
+        logger.error(f"Error fetching upcoming assignments: {str(e)}", exc_info=True)
+        raise
+    
