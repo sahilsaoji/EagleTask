@@ -98,14 +98,3 @@ async def get_upcoming_assignments(data: CanvasAPIKey, date: str):
     # Get the current date 
     pass
 
-# API endpoint to fetch calendar for each course (.ics file) for Calendar Page
-@app.post("/get-course-calendars")
-async def get_course_calendars(data: CanvasAPIKey):
-    logging.info(f"Fetching course calendars for API Key: {data.api_key}")
-    try: 
-        calendar = canvas_api.get_calendar(data.api_key)
-        return {"calendar": calendar}
-    except Exception as e:
-        logging.error("Failed to fetch course calendars", exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e)) 
-        

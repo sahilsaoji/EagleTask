@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getCoursesWithGradedAssignments, analyzeGrades } from '../api/api';
 import ReactMarkdown from 'react-markdown';
+import LoadingIndicator from './LoadingIndicator';
 
 const Grades = () => {
     const [coursesWithGrades, setCoursesWithGrades] = useState([]);
@@ -95,11 +96,7 @@ const Grades = () => {
                     </div>
 
                     {/* Loading Indicator */}
-                    {loading && (
-                        <div className="flex justify-center items-center h-full">
-                            <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-[#BC9B6A] border-opacity-75"></div>
-                        </div>
-                    )}
+                    {loading && <LoadingIndicator loading={loading} />}
 
                     {!loading && (
                         <div className="space-y-4">

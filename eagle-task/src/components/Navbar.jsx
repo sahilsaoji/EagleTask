@@ -85,10 +85,10 @@ function Navbar({ isLoggedIn, onSignOut }) {
           </li>
           <li>
             <button
-              onClick={() => handleProtectedClick('/calendar')}
+              onClick={() => handleProtectedClick('/study')}
               className="hover:text-gray-300 transition"
             >
-              Calendar
+              Study
             </button>
           </li>
         </ul>

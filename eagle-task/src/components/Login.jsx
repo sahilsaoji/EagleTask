@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { dummyRequest, validateApiKey } from '../api/api';
-import Loading from './Loading';
+import LoadingIndicator from './LoadingIndicator';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -47,7 +47,7 @@ export const Login = ({ setLoggedIn }) => {
     };
 
     if (loading) {
-        return <Loading />;
+        return <LoadingIndicator />;
     }
 
     return (

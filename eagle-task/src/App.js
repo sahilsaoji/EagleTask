@@ -7,12 +7,12 @@ import './index.css';
 import Tasks from './components/Tasks';
 import Dashboard from './components/Dashboard';
 import Grades from './components/Grades';
-import Loading from './components/Loading';
+import LoadingIndicator from './components/LoadingIndicator';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Support from './components/Support';
 import Help from './components/Help';
-import Calendar from './components/Calendar';
+import Study from './components/Study';
 
 function App() {
   // Initialize `loggedIn` from `localStorage` to persist state across reloads
@@ -53,10 +53,10 @@ function App() {
               element={loggedIn ? <Support /> : <Navigate to="/login" />}
             />
             <Route
-              path="/calendar"
-              element={loggedIn ? <Calendar /> : <Navigate to="/login" />}
+              path="/study"
+              element={loggedIn ? <Study /> : <Navigate to="/login" />}
             />
-            <Route path="/loading" element={<Loading />} />
+            <Route path="/loading" element={<LoadingIndicator />} />
             <Route path="/help" element={<Help />} />
             <Route path="/login" element={<Login setLoggedIn={setLoggedIn} />} />
           </Routes>

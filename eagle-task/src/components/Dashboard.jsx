@@ -22,13 +22,13 @@ const Dashboard = () => {
             </Link>
           </div>
 
-          {/* Calendar Card */}
+          {/* Study Card */}
           <div className="bg-[#7B313C] text-white p-6 rounded-2xl shadow-md flex flex-col items-center">
-            <h2 className="text-2xl font-semibold mb-2">Calendar</h2>
+            <h2 className="text-2xl font-semibold mb-2">Study</h2>
             <p className="text-center text-[#D9D9D9] mb-4 flex-grow">
-              Visualize your upcoming exams, assignments, and course events
+              Upload your notes, generate summaries, and take quizzes to test your knowledge
             </p>
-            <Link to="/calendar">
+            <Link to="/study">
               <button className="bg-[#BC9B6A] text-white py-3 px-8 rounded-full font-semibold flex items-center justify-center transition-transform duration-200 transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#7B313C]">
                 <span className="mr-2">&rarr;</span>
               </button>
