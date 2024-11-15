@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
+import { chatWithSupport } from '../api/api';
 
 const Support = () => {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const chatEndRef = useRef(null);
 
-    // Sample list of support resources
+    // Sample list of support resource questions
     const supportResources = [
-        { name: "Counseling Services", description: "Mental health support and counseling." },
-        { name: "Academic Advising", description: "Help with course selection and academic planning." },
-        { name: "Health Services", description: "On-campus health services for students." },
-        { name: "Disability Services", description: "Support for students with disabilities." },
-        { name: "Career Center", description: "Career guidance and internship/job search help." },
+        { name: "Counseling Services", description: "Where can I go for counseling at BC?" },
+        { name: "Academic Advising", description: "How do I access academic advising?" },
+        { name: "Health Services", description: "Is there on campus health services?" },
+        { name: "Disability Services", description: "What do I have access too as a disabled student" },
+        { name: "Policy Guidance", description: "What are the university policies?" },
     ];
 
     useEffect(() => {
-        // Only auto-scroll if there are messages
         if (messages.length > 0 && chatEndRef.current) {
             chatEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
@@ -25,21 +25,31 @@ const Support = () => {
     // Handle sending a message
     const sendMessage = async (message = input) => {
         if (message.trim() === "") return;
+        setInput("");
 
         const newMessage = { sender: "user", text: message };
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        const loadingMessage = { sender: "bot", text: "Loading...", isLoading: true };
+
+        setMessages((prevMessages) => [...prevMessages, newMessage, loadingMessage]);
 
         try {
-            // Mock bot response for now (replace with API call if needed)
-            const botResponse = `You asked about: **${message}**. Here is some information:\n\n*Please visit the official site for more details.*`;
+            const botResponse = await chatWithSupport(message);
             const botMessage = { sender: "bot", text: botResponse };
 
-            setMessages((prevMessages) => [...prevMessages, botMessage]);
+            // Replace the loading message with the actual response
+            setMessages((prevMessages) =>
+                prevMessages.map((msg) =>
+                    msg.isLoading ? botMessage : msg
+                )
+            );
         } catch (error) {
             console.error("Error in sending message:", error);
+            setMessages((prevMessages) =>
+                prevMessages.map((msg) =>
+                    msg.isLoading ? { sender: "bot", text: "Sorry, something went wrong. Please try again." } : msg
+                )
+            );
         }
-
-        setInput(""); // Clear the input box
     };
 
     const handleKeyDown = (event) => {
@@ -49,17 +59,21 @@ const Support = () => {
         }
     };
 
+    // Clear all messages
+    const clearMessages = () => {
+        setMessages([]);
+    };
+
     return (
         <div className="flex min-h-screen bg-[#D9D9D9] p-8">
-            {/* Left Pane: Support Resources */}
             <div className="w-1/3 bg-[#1E1E1E] text-white rounded-lg p-6 shadow-lg mr-4 max-h-[80vh] overflow-y-auto">
-                <h2 className="text-2xl font-semibold mb-6">Support Resources</h2>
+                <h2 className="text-2xl font-semibold mb-6">Sample Questions</h2>
                 <ul className="space-y-4">
                     {supportResources.map((resource, index) => (
                         <li
                             key={index}
                             className="bg-[#7B313C] p-4 rounded-lg cursor-pointer hover:bg-[#BC9B6A] transition duration-200"
-                            onClick={() => sendMessage(resource.name)}
+                            onClick={() => sendMessage(resource.description)}
                         >
                             <h3 className="text-xl font-semibold">{resource.name}</h3>
                             <p className="text-sm text-[#D9D9D9]">{resource.description}</p>
@@ -68,7 +82,6 @@ const Support = () => {
                 </ul>
             </div>
 
-            {/* Right Pane: Chat Window */}
             <div className="w-2/3 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
                 <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Support Chat</h1>
                 <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
@@ -78,17 +91,17 @@ const Support = () => {
                             className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                         >
                             <div
-                                className={`p-3 mb-2 rounded-lg max-w-xs ${
+                                className={`p-3 mb-2 rounded-lg max-w-lg ${
                                     msg.sender === "user"
                                         ? "bg-[#7B313C] text-white text-right"
                                         : "bg-gray-300 text-gray-900 text-left"
                                 }`}
                                 style={{ wordWrap: "break-word" }}
                             >
-                                {msg.sender === "bot" ? (
-                                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                                {msg.isLoading ? (
+                                    <img src={`${process.env.PUBLIC_URL}/loading.svg`} alt="Loading" className="h-5 w-5 mx-auto" />
                                 ) : (
-                                    msg.text
+                                    <ReactMarkdown>{msg.text}</ReactMarkdown>
                                 )}
                             </div>
                         </div>
@@ -109,6 +122,12 @@ const Support = () => {
                         onClick={() => sendMessage(input)}
                     >
                         Send
+                    </button>
+                    <button
+                        className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md hover:bg-[#BC9B6A] transition duration-200"
+                        onClick={clearMessages}
+                    >
+                        Clear
                     </button>
                 </div>
             </div>

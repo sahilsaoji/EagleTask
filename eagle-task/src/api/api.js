@@ -93,3 +93,20 @@ export async function validateApiKey(apiKey) {
     }
 }
 
+/** 
+ * Chat with the support resources 
+ * 
+ * @param {string} message - The message to send to the support resources.
+ * @returns {Promise<Object>} - A promise that resolves to the response from the support resources.
+ */
+export async function chatWithSupport(message) {
+    try {
+        const response = await axios.post(`${BASE_URL}/support`, {
+            prompt: message
+        });
+        return response.data.response;
+    } catch (error) {
+        console.error("Error chatting with support:", error.response?.data || error.message);
+        throw error;
+    }
+}

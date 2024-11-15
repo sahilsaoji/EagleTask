@@ -8,11 +8,11 @@ const Grades = () => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [input, setInput] = useState("");
+    const [loadingResponse, setLoadingResponse] = useState(false);
 
     useEffect(() => {
         const storedData = localStorage.getItem('courses_with_graded_assignments');
         if (storedData) {
-            console.log(JSON.parse(storedData));
             setCoursesWithGrades(JSON.parse(storedData));
         }
     }, []);
@@ -31,21 +31,29 @@ const Grades = () => {
         if (message.trim() === "") return;
 
         const newMessage = { sender: "user", text: message };
-        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        const loadingMessage = { sender: "bot", text: "Loading...", isLoading: true };
+
+        setMessages((prevMessages) => [...prevMessages, newMessage, loadingMessage]);
         setInput("");
+        setLoadingResponse(true);
 
         try {
             const grades = JSON.parse(localStorage.getItem('courses_with_graded_assignments'));
             const response = await analyzeGrades(message, grades);
-            
-            const botMessage = {
-                sender: "bot",
-                text: response,
-            };
 
-            setMessages((prevMessages) => [...prevMessages, botMessage]);
+            const botMessage = { sender: "bot", text: response };
+            setMessages((prevMessages) =>
+                prevMessages.map((msg) => (msg.isLoading ? botMessage : msg))
+            );
         } catch (error) {
-            console.error("Error analyzing grades, please ensure you have refreshed your grades first!", error);
+            console.error("Error analyzing grades:", error);
+            setMessages((prevMessages) =>
+                prevMessages.map((msg) =>
+                    msg.isLoading ? { sender: "bot", text: "Sorry, something went wrong. Please try again." } : msg
+                )
+            );
+        } finally {
+            setLoadingResponse(false);
         }
     };
 
@@ -63,8 +71,6 @@ const Grades = () => {
 
             localStorage.setItem('courses_with_graded_assignments', JSON.stringify(coursesWithGrades));
             setCoursesWithGrades(coursesWithGrades);
-
-            console.log("Courses with Grades:", coursesWithGrades);
         } catch (error) {
             console.error("Error fetching courses with grades:", error);
             alert("Failed to fetch grades. Please try again.");
@@ -78,6 +84,10 @@ const Grades = () => {
             event.preventDefault();
             sendMessage();
         }
+    };
+
+    const clearMessages = () => {
+        setMessages([]);
     };
 
     return (
@@ -95,7 +105,6 @@ const Grades = () => {
                         </button>
                     </div>
 
-                    {/* Loading Indicator */}
                     {loading && <LoadingIndicator loading={loading} />}
 
                     {!loading && (
@@ -143,7 +152,7 @@ const Grades = () => {
 
                 {/* Chat with AI Section */}
                 <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
-                    <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Chat With AI</h1>
+                    <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Grades Chat</h1>
                     <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                         {messages.map((msg, index) => (
                             <div
@@ -158,10 +167,10 @@ const Grades = () => {
                                     }`}
                                     style={{ wordWrap: "break-word" }}
                                 >
-                                    {msg.sender === "bot" ? (
-                                        <ReactMarkdown>{msg.text}</ReactMarkdown>
+                                    {msg.isLoading ? (
+                                        <img src={`${process.env.PUBLIC_URL}/loading.svg`} alt="Loading" className="h-5 w-5 mx-auto" />
                                     ) : (
-                                        msg.text
+                                        <ReactMarkdown>{msg.text}</ReactMarkdown>
                                     )}
                                 </div>
                             </div>
@@ -181,6 +190,12 @@ const Grades = () => {
                             onClick={() => sendMessage(input)}
                         >
                             Send
+                        </button>
+                        <button
+                            className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md"
+                            onClick={clearMessages}
+                        >
+                            Clear
                         </button>
                     </div>
                 </div>
