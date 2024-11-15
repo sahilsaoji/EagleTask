@@ -160,7 +160,7 @@ const Grades = () => {
                                 className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                             >
                                 <div
-                                    className={`p-3 mb-2 rounded-lg max-w-xs ${
+                                    className={`p-3 mb-2 rounded-lg max-w-lg ${
                                         msg.sender === "user"
                                             ? "bg-[#7B313C] text-white text-right"
                                             : "bg-gray-300 text-gray-900 text-left"

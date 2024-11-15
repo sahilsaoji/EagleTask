@@ -31,6 +31,12 @@ class TaskRequest(BaseModel):
 class TaskListRequest(BaseModel):
     apiKey: str
 
+# Define chat task request
+class TaskChatRequest(BaseModel):
+    prompt: str
+    tasks: List[Dict]
+
+# Define task response
 class TaskResponse(BaseModel):
     response: str
 
@@ -199,7 +205,6 @@ async def generate_task_list(request: TaskListRequest):
         logger.error("Error in generate_task_list: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
 
-
 # Endpoint to analyze grades and provide recommendations
 @router.post("/analyze-grades", response_model=TaskResponse)
 async def analyze_grades(request: GradesRequest):
@@ -232,6 +237,7 @@ async def analyze_grades(request: GradesRequest):
 # Endpoint to chat with support resources 
 @router.post("/support", response_model=TaskResponse)
 async def chat_with_support(request: TaskRequest):
+    
     user_id = "default_user"  # Replace this with user-specific identification if available
     logger.info(f"Received request: {request.model_dump()}")
 
@@ -258,3 +264,38 @@ async def chat_with_support(request: TaskRequest):
         logger.error("Error in chat_with_support: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
     
+# Endpoint to chat about tasks
+@router.post("/chat-tasks", response_model=TaskResponse)
+async def chat_about_tasks(request: TaskChatRequest):
+    try:
+        tasks = request.tasks
+        assistant_instructions = (
+            '''You are a helpful assistant designed to help users plan and organize their tasks. 
+
+            You have identified the following tasks so far and the user will now ask you questions about them.
+            '''
+            f"{tasks}"
+        )
+
+        # Initialize chat history if it's empty
+        if not chat_history_tasks:
+            chat_history_tasks.append({"role": "system", "content": assistant_instructions})
+
+        chat_history_tasks.append({"role": "user", "content": request.prompt})
+
+        # Make the OpenAI API call
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=chat_history_tasks,
+        )
+
+        # Extract the assistant's response
+        reply = response.choices[0].message.content.strip()
+        chat_history_tasks.append({"role": "assistant", "content": reply})
+
+        # Log the reply
+        return TaskResponse(response=reply)
+
+    except Exception as e:
+        logger.error("Error in generate_task_list: %s", str(e))
+        raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")

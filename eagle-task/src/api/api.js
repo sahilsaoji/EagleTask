@@ -44,7 +44,6 @@ export async function createTaskList(apiKey) {
 }
 
 
-
 /** 
  * Sends a POST request to analyze the user's grades.
  * 
@@ -111,6 +110,27 @@ export async function chatWithSupport(message) {
         return response.data.response;
     } catch (error) {
         console.error("Error chatting with support:", error.response?.data || error.message);
+        throw error;
+    }
+}
+
+/** 
+ * Chat with the tasks chat 
+ * 
+ * @param {string} message - The message to send to the tasks chat.
+ * @param {Array} tasks - The tasks data retrieved from localStorage.
+ */
+export async function chatWithTasks(message, tasks) {
+    try {
+        const response = await axios.post(`${BASE_URL}/chat-tasks`, {
+            prompt: message,
+            tasks: tasks
+        });
+
+        return response.data.response;
+        
+    } catch (error) {
+        console.error("Error chatting with tasks:", error.response?.data || error.message);
         throw error;
     }
 }

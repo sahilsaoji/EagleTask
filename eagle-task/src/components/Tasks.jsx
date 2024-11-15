@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { createTaskList } from '../api/api';
+import { createTaskList, chatWithTasks } from '../api/api';
 import LoadingIndicator from './LoadingIndicator';
 import { FaClock, FaCalendarAlt, FaBook } from "react-icons/fa";
+import TaskCalendar from './TaskCalendar';
 
 
 const Tasks = () => {
@@ -61,8 +62,10 @@ const Tasks = () => {
         setLoadingResponse(true);
 
         try {
-            const response = await createTaskList(message);
-            const botMessage = { sender: "bot", text: response.data.response };
+            // load tasks from local Storage
+            const tasks = JSON.parse(localStorage.getItem('tasks'));
+            const response = await chatWithTasks(message, tasks);
+            const botMessage = { sender: "bot", text: response};
 
             setMessages((prevMessages) =>
                 prevMessages.map((msg) => (msg.isLoading ? botMessage : msg))
@@ -190,16 +193,7 @@ const Tasks = () => {
                         )}
                     </div>
                 ) : (
-                    <div className="bg-[#1E1E1E] p-4 rounded-lg border border-[#7B313C]">
-                        <Calendar
-                            onChange={setSelectedDate}
-                            value={selectedDate}
-                            className="bg-[#1E1E1E] text-white"
-                        />
-                        <p className="text-gray-400 mt-4 text-center">
-                            Selected Date: {selectedDate.toDateString()}
-                        </p>
-                    </div>
+                    <TaskCalendar tasks={taskList} selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
                 )}
             </div>
 
