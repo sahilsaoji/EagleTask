@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/eagletask/static/css/main.2b298d00.css",
-    "main.js": "/eagletask/static/js/main.4accae18.js",
+    "main.css": "/eagletask/static/css/main.db11b2fd.css",
+    "main.js": "/eagletask/static/js/main.1658010e.js",
     "static/media/fa-solid-900.ttf": "/eagletask/static/media/fa-solid-900.07ed6d5fa32c1d54af0f.ttf",
     "static/media/fa-brands-400.ttf": "/eagletask/static/media/fa-brands-400.0ff70dcbf135d859ebf3.ttf",
     "static/media/fa-solid-900.woff2": "/eagletask/static/media/fa-solid-900.93f719f4d62bfa3e748c.woff2",
@@ -11,11 +11,11 @@
     "static/media/fa-v4compatibility.ttf": "/eagletask/static/media/fa-v4compatibility.0f6cb412603527bda691.ttf",
     "static/media/fa-v4compatibility.woff2": "/eagletask/static/media/fa-v4compatibility.6cfec8414be20e2c3426.woff2",
     "index.html": "/eagletask/index.html",
-    "main.2b298d00.css.map": "/eagletask/static/css/main.2b298d00.css.map",
-    "main.4accae18.js.map": "/eagletask/static/js/main.4accae18.js.map"
+    "main.db11b2fd.css.map": "/eagletask/static/css/main.db11b2fd.css.map",
+    "main.1658010e.js.map": "/eagletask/static/js/main.1658010e.js.map"
   },
   "entrypoints": [
-    "static/css/main.2b298d00.css",
-    "static/js/main.4accae18.js"
+    "static/css/main.db11b2fd.css",
+    "static/js/main.1658010e.js"
   ]
 }
