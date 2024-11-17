@@ -7,6 +7,9 @@ const loadingMessages = [
     { text: 'Talking to Father Leahy 🧐', delay: 6000 },
     { text: 'Going to the Mods ✅', delay: 7500 },
     { text: 'Almost there! 🚀', delay: 9000 },
+    { text: 'Paying Tuition 💸', delay: 10500 },
+    { text: 'Getting ready for graduation 🎓', delay: 12000 },
+    { text: 'EagleTask is loading...', delay: 13500 },
 ];
 
 const LoadingIndicator = ({ loading }) => {

@@ -45,12 +45,12 @@ const TaskCalendar = ({ tasks, selectedDate, setSelectedDate }) => {
                 prev2Label={null}
             />
             <div className="mt-4 text-center">
-                <h2 className="text-lg font-semibold">Tasks Due on {selectedDate.toDateString()}</h2>
+                <h2 className="text-lg font-semibold text-white">Tasks Due on {selectedDate.toDateString()}</h2>
                 <ul className="space-y-2">
                     {tasks
                         .filter((task) => new Date(task.due_date).toDateString() === selectedDate.toDateString())
                         .map((task, index) => (
-                            <li key={index} className="bg-[#7B313C] p-3 rounded-lg">
+                            <li key={index} className="bg-[#7B313C] p-3 rounded-lg text-white">
                                 <h3 className="font-bold">{task.task}</h3>
                                 <p className="text-sm"><FaBook className="inline mr-1" /> {task.course}</p>
                                 <p className="text-sm"><FaClock className="inline mr-1" /> {task.time_estimate}</p>

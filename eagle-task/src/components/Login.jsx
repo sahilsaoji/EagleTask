@@ -47,7 +47,7 @@ export const Login = ({ setLoggedIn }) => {
     };
 
     if (loading) {
-        return <LoadingIndicator />;
+        return <LoadingIndicator loading={true} />;
     }
 
     return (

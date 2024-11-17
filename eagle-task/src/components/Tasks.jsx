@@ -5,6 +5,8 @@ import { createTaskList, chatWithTasks } from '../api/api';
 import LoadingIndicator from './LoadingIndicator';
 import { FaClock, FaCalendarAlt, FaBook } from "react-icons/fa";
 import TaskCalendar from './TaskCalendar';
+import ReactMarkdown from 'react-markdown';
+
 
 
 const Tasks = () => {
@@ -217,7 +219,7 @@ const Tasks = () => {
                                 {msg.isLoading ? (
                                     <img src={`${process.env.PUBLIC_URL}/loading.svg`} alt="Loading" className="h-5 w-5 mx-auto" />
                                 ) : (
-                                    msg.text
+                                    <ReactMarkdown>{msg.text}</ReactMarkdown>
                                 )}
                             </div>
                         </div>

@@ -171,14 +171,14 @@ async def generate_task_list(request: TaskListRequest):
             f"{upcoming_tasks}"
         )
 
-        # Initialize chat history if it's empty
-        if not chat_history_tasks:
-            chat_history_tasks.append({"role": "system", "content": assistant_instructions})
+        # Initialize a local chat history for this endpoint
+        initialize_tasks = []
+        initialize_tasks.append({"role": "system", "content": assistant_instructions})
 
         # Make the OpenAI API call
         response = openai.chat.completions.create(
             model="gpt-4o-mini",
-            messages=chat_history_tasks,
+            messages=initialize_tasks,
         )
 
         # Extract the assistant's response
@@ -273,6 +273,10 @@ async def chat_about_tasks(request: TaskChatRequest):
             '''You are a helpful assistant designed to help users plan and organize their tasks. 
 
             You have identified the following tasks so far and the user will now ask you questions about them.
+
+            Please provide detailed responses to the user's question as text. No JSON or code blocks are needed.
+            
+            Current user tasks: 
             '''
             f"{tasks}"
         )
