@@ -68,13 +68,21 @@ export async function analyzeGrades(message, grades) {
  * Send a dummy request to the backend to wake up the server.
  * Query the base endpoint and wait for the reponse 
  */
-export async function dummyRequest() {
-    try {
-        const response = await axios.get(`${BASE_URL}/`);
-        return response.data.message; // Updated field
-    } catch (error) {
-        console.error("Error waking up server:", error.response?.data || error.message);
-        throw error;
+export async function dummyRequest(retries = 5, delay = 5000) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const response = await axios.get(`${BASE_URL}/`);
+            console.log("Backend woke up on attempt:", attempt);
+            return response.data.message; // Return the server's message if successful
+        } catch (error) {
+            console.error(`Attempt ${attempt} failed:`, error.message);
+            if (attempt === retries) {
+                // Throw error after the final attempt
+                throw new Error("Backend did not respond after multiple attempts.");
+            }
+            // Wait for the specified delay before retrying
+            await new Promise((resolve) => setTimeout(resolve, delay));
+        }
     }
 }
 

@@ -22,29 +22,34 @@ export const Login = ({ setLoggedIn }) => {
         setLoading(true);
         setError('');
         try {
-            // Wake up the server first
+            // Polling the backend to wake it up
             await dummyRequest();
-
+    
             // Validate the API key
             const validationResponse = await validateApiKey(api_key);
-
+    
             // Save API key and user ID to localStorage
             localStorage.setItem('canvasApiKey', api_key);
             localStorage.setItem('userId', validationResponse.user);
-
+    
             // Set the user as logged in
             localStorage.setItem('isLoggedIn', 'true');
             setLoggedIn(true);
-
+    
             // Navigate to the dashboard explicitly
             navigate('/');
         } catch (err) {
             console.error("Login failed:", err);
-            setError("Invalid API Key. Please check your key and try again.");
+            if (err.message.includes("Backend did not respond")) {
+                setError("Our server is starting up. Please try again in a moment.");
+            } else {
+                setError("Invalid API Key. Please check your key and try again.");
+            }
         } finally {
             setLoading(false);
         }
     };
+    
 
     if (loading) {
         return <LoadingIndicator loading={true} />;
