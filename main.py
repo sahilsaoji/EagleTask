@@ -14,7 +14,8 @@ app = FastAPI()
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # CORS setup
-'''
+
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
@@ -27,10 +28,25 @@ app.add_middleware(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Change this to your frontend URL in production
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+'''
+
+# Log incoming requests
+@app.middleware("http")
+async def log_requests(request, call_next):
+    logging.info(f"Request: {request.method} {request.url}")
+    logging.info(f"Headers: {request.headers}")
+    logging.info(f"Origin: {request.headers.get('origin', 'No Origin')}")
+    
+    if request.method == "OPTIONS":
+        logging.info("Handling CORS preflight request.")
+    
+    response = await call_next(request)
+    logging.info(f"Response status: {response.status_code}")
+    return response
 
 
 

@@ -22,9 +22,7 @@ export const Login = ({ setLoggedIn }) => {
         setLoading(true);
         setError('');
         try {
-            // Polling the backend to wake it up
-    
-            // Validate the API key
+            // Validate the API key with retry logic until backend wakes up
             const validationResponse = await validateApiKey(api_key);
     
             // Save API key and user ID to localStorage
@@ -48,6 +46,7 @@ export const Login = ({ setLoggedIn }) => {
             setLoading(false);
         }
     };
+    
     
 
     if (loading) {

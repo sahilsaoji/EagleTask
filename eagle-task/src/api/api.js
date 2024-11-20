@@ -87,22 +87,34 @@ export async function dummyRequest(retries = 5, delay = 5000) {
 }
 
 /**
- * Sends a POST request to the FastAPI backend to validate the Canvas API key.
+ * Sends a POST request to the FastAPI backend to validate the Canvas API key,
+ * with retry logic to handle backend wake-up delays.
  * 
  * @param {string} apiKey - The user's Canvas API key.
+ * @param {number} retries - Number of retry attempts.
+ * @param {number} delay - Delay between retries in milliseconds.
  * @returns {Promise<Object>} - A promise that resolves to the validation result.
  */
-export async function validateApiKey(apiKey) {
-    try {
-        const response = await axios.post(`${BASE_URL}/validate-api-key`, {
-            api_key: apiKey
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Error validating API Key:", error.response?.data || error.message);
-        throw error;
+export async function validateApiKey(apiKey, retries = 25, delay = 5000) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            console.log(`Attempt ${attempt} to validate API key.`);
+            const response = await axios.post(`${BASE_URL}/validate-api-key`, {
+                api_key: apiKey
+            });
+            console.log("Backend responded successfully.");
+            return response.data;
+        } catch (error) {
+            console.error(`Attempt ${attempt} failed:`, error.message);
+            if (attempt === retries) {
+                throw new Error("Backend did not respond after multiple attempts.");
+            }
+            // Wait before retrying
+            await new Promise((resolve) => setTimeout(resolve, delay));
+        }
     }
 }
+
 
 /** 
  * Chat with the support resources 
