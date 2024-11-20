@@ -23,7 +23,6 @@ export const Login = ({ setLoggedIn }) => {
         setError('');
         try {
             // Polling the backend to wake it up
-            await dummyRequest();
     
             // Validate the API key
             const validationResponse = await validateApiKey(api_key);
