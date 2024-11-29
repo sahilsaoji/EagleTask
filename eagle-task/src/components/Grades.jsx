@@ -150,8 +150,35 @@ const Grades = () => {
             </div>
 
             {/* Chat Section */}
-            <div className="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh] overflow-y-auto">
-                <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900">Grades Chat</h1>
+            <div className="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh] overflow-y-auto relative">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900 flex items-center justify-center gap-2">
+                    Grades Chat
+                    {/* Info Icon */}
+                    <div className="relative group">
+                        <span className="text-gray-600 hover:text-[#7B313C] cursor-pointer">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M12 20.5A8.5 8.5 0 103.5 12a8.5 8.5 0 008.5 8.5z"
+                                />
+                            </svg>
+                        </span>
+                        {/* Tooltip */}
+                        <div className="absolute hidden group-hover:block bg-black text-white text-sm rounded-md p-2 top-full mt-2 shadow-lg z-10 w-64">
+                            Ask me any question about your real-time grades, like:
+                            <br />
+                            <span className="font-semibold">"What class am I doing best in?"</span>
+                        </div>
+                    </div>
+                </h1>
                 <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (
                         <div
@@ -198,6 +225,7 @@ const Grades = () => {
                     </button>
                 </div>
             </div>
+
         </div>
     );
 };

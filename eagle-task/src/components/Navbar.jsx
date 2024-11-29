@@ -49,25 +49,25 @@ function Navbar({ isLoggedIn, onSignOut }) {
         <div className="flex-grow flex justify-center space-x-6">
           <button
             onClick={() => handleProtectedClick('/grades')}
-            className="hover:text-gray-300 transition"
-          >
+            className="text-lg font-bold text-white hover:text-[#BC9B6A] hover:font-extrabold transition"
+            >
             Grades
           </button>
           <button
             onClick={() => handleProtectedClick('/tasks')}
-            className="hover:text-gray-300 transition"
+            className="text-lg font-bold text-white hover:text-[#BC9B6A] hover:font-extrabold transition"
           >
             Tasks
           </button>
           <button
             onClick={() => handleProtectedClick('/support')}
-            className="hover:text-gray-300 transition"
+            className="text-lg font-bold text-white hover:text-[#BC9B6A] hover:font-extrabold transition"
           >
             Support
           </button>
           <button
             onClick={() => handleProtectedClick('/study')}
-            className="hover:text-gray-300 transition"
+            className="text-lg font-bold text-white hover:text-[#BC9B6A] hover:font-extrabold transition"
           >
             Study
           </button>

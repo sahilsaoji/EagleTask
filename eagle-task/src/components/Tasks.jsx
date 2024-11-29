@@ -160,9 +160,36 @@ const Tasks = () => {
             </div>
 
             {/* Chat Section */}
-            <div className="w-full md:w-1/2 bg-white shadow-md rounded-lg p-4 sm:p-6 flex flex-col max-h-[60vh] md:max-h-[80vh] overflow-y-auto">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900">Tasks Chat</h1>
-            <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
+            <div className="w-full md:w-1/2 bg-white shadow-md rounded-lg p-4 sm:p-6 flex flex-col max-h-[60vh] md:max-h-[80vh] overflow-y-auto relative">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900 flex items-center justify-center gap-2">
+                    Tasks Chat
+                    {/* Info Icon */}
+                    <div className="relative group">
+                        <span className="text-gray-600 hover:text-[#7B313C] cursor-pointer">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M12 20.5A8.5 8.5 0 103.5 12a8.5 8.5 0 008.5 8.5z"
+                                />
+                            </svg>
+                        </span>
+                        {/* Tooltip */}
+                        <div className="absolute hidden group-hover:block bg-black text-white text-sm rounded-md p-2 top-full mt-2 shadow-lg z-10 w-64">
+                            Ask me any question about your generated task list, like:
+                            <br />
+                            <span className="font-semibold">"What should I do first?"</span>
+                        </div>
+                    </div>
+                </h1>
+                <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (
                         <div
                             key={index}
@@ -193,21 +220,23 @@ const Tasks = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        />
-                        <button
-                            className="bg-[#7B313C] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A]"
-                            onClick={() => sendMessage(input)}
-                        >
-                            Send
-                        </button>
-                        <button
-                            className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A]"
-                            onClick={clearMessages}
-                        >
-                            Clear
-                        </button>
-                    </div>
+                    />
+                    <button
+                        className="bg-[#7B313C] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A]"
+                        onClick={() => sendMessage(input)}
+                    >
+                        Send
+                    </button>
+                    <button
+                        className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A]"
+                        onClick={clearMessages}
+                    >
+                        Clear
+                    </button>
                 </div>
+            </div>
+
+
             </div>
         );
     };
