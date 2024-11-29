@@ -154,3 +154,31 @@ export async function chatWithTasks(message, tasks) {
         throw error;
     }
 }
+
+/** 
+ * Create a mock quiz for the user based on the doc or docx uploaded 
+ * 
+ * @param {File} file - The file to upload for quiz creation.
+ * @returns {Promise<Object>} - A promise that resolves to the response from the quiz creation.
+ */
+export async function createQuiz(file) {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        console.log("Uploading file:", file.name); // Debug log
+
+        const response = await axios.post(`${BASE_URL}/create-quiz`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        console.log("Response received:", response.data); // Debug log
+
+        return response.data;
+    } catch (error) {
+        console.error('Error creating quiz:', error.response?.data || error.message);
+        throw error;
+    }
+}

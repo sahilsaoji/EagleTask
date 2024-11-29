@@ -1,10 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from docx import Document
 from typing import Dict
 import openai
 import json
 import os
+import re
 from dotenv import load_dotenv
 import logging
 from typing import List, Optional
@@ -54,6 +56,9 @@ class Course(BaseModel):
 class GradesRequest(BaseModel):
     prompt: str
     grades: List[Course]
+
+class QuizRequest(BaseModel):
+    document: str
 
 # Chat histories
 chat_history_tasks = []
@@ -268,6 +273,7 @@ async def chat_with_support(request: TaskRequest):
 # Endpoint to chat about tasks
 @router.post("/chat-tasks", response_model=TaskResponse)
 async def chat_about_tasks(request: TaskChatRequest):
+
     try:
         tasks = request.tasks
         assistant_instructions = (
@@ -304,3 +310,90 @@ async def chat_about_tasks(request: TaskChatRequest):
     except Exception as e:
         logger.error("Error in generate_task_list: %s", str(e))
         raise HTTPException(status_code=500, detail="Error communicating with OpenAI API")
+
+def extract_text_from_docx(file):
+    """Extract text content from a .docx file."""
+    document = Document(file)
+    full_text = []
+    for paragraph in document.paragraphs:
+        full_text.append(paragraph.text)
+    return '\n'.join(full_text)
+
+@router.post("/create-quiz")
+async def generate_quiz(file: UploadFile = File(...)):
+    try:
+        # Log the uploaded file's metadata
+        logging.info(f"Received file: {file.filename} of type {file.content_type}")
+
+        # Check file type
+        if not file.filename.endswith(('.txt', '.docx')):
+            raise HTTPException(
+                status_code=400,
+                detail="Unsupported file type. Please upload a .txt or .docx file.",
+            )
+
+        # Read the uploaded file's content
+        content = await file.read()
+
+        # Extract text from the file
+        if file.filename.endswith('.txt'):
+            text_content = content.decode('utf-8')  # Decode assuming UTF-8 for .txt
+        elif file.filename.endswith('.docx'):
+            try:
+                text_content = extract_text_from_docx(file.file)  # Parse .docx content
+            except Exception as e:
+                logging.error(f"Failed to parse .docx file: {e}")
+                raise HTTPException(
+                    status_code=400, detail="Failed to parse .docx file. Ensure it is a valid Word document."
+                )
+
+        # Prepare the OpenAI API request
+        assistant_instructions = f"""
+        Generate a quiz based on the following document. Return a JSON object with the format:
+        {{
+            "Quiz": [
+                {{"Question": "Question text", "Answer": "Answer text", "Hint": "Optional hint"}},
+                ...
+            ]
+        }}
+        Document Content:
+        {text_content}
+        """
+
+        # Send request to OpenAI
+        logging.info("Sending request to OpenAI...")
+        response = openai.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": assistant_instructions},
+            ],
+        )
+
+        # Extract and clean up the reply
+        reply = response.choices[0].message.content.strip()
+
+        # Remove triple backticks and clean JSON
+        cleaned_reply = re.sub(r"```json|```", "", reply).strip()
+        logging.error(f"GPT-4 response: {cleaned_reply}")
+
+
+        # Parse the response as JSON
+        try:
+            quiz_json = json.loads(cleaned_reply)
+        except json.JSONDecodeError as e:
+            logging.error(f"Failed to parse OpenAI response: {e}")
+            raise HTTPException(
+                status_code=500,
+                detail="Error parsing OpenAI response. Please try again later.",
+            )
+
+        logging.info("Quiz successfully generated.")
+        return JSONResponse(content=quiz_json)
+
+    except HTTPException as e:
+        logging.error(f"HTTP Exception: {e.detail}")
+        raise
+    except Exception as e:
+        logging.error(f"Unhandled Exception: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
