@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # CORS setup
 
-
+'''
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
@@ -32,7 +32,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-'''
+
 
 # Log incoming requests
 @app.middleware("http")
@@ -109,9 +109,4 @@ async def get_courses_with_graded_assignments(data: CanvasAPIKey):
         logging.error("Failed to fetch courses and graded assignments", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
-# API endpoint to fetch upcoming assignments for Tasks - assignments due in next 2 weeks 
-@app.post("/get-upcoming-assignments")
-async def get_upcoming_assignments(data: CanvasAPIKey, date: str):
-    # Get the current date 
-    pass
 

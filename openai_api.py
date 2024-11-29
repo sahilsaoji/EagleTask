@@ -349,13 +349,24 @@ async def generate_quiz(file: UploadFile = File(...)):
 
         # Prepare the OpenAI API request
         assistant_instructions = f"""
-        Generate a quiz based on the following document. Return a JSON object with the format:
+        Generate a quiz based on the following document. The output should be a JSON object containing anywhere from 3 to 15 questions, with each question including the question text, 4 answer choices, and an optional hint. Use the following format:
+
+        ENSURE YOUR JSON IS VALID. IT MUST CONFORM TO THE FOLLOWING FORMAT:
+        
         {{
             "Quiz": [
-                {{"Question": "Question text", "Answer": "Answer text", "Hint": "Optional hint"}},
+                {{
+                    "Question": "Sample question text",
+                    "Choices": ["Choice 1", "Choice 2", "Choice 3", "Choice 4"],
+                    "Answer": "The correct answer choice",
+                    "Explanation": "Explanation of the correct answer."
+                }},
                 ...
             ]
         }}
+
+        Ensure the questions are relevant to the provided document content. Use the document text to create meaningful questions and plausible answer choices.
+
         Document Content:
         {text_content}
         """

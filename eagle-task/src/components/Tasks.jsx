@@ -161,8 +161,8 @@ const Tasks = () => {
 
             {/* Chat Section */}
             <div className="w-full md:w-1/2 bg-white shadow-md rounded-lg p-4 sm:p-6 flex flex-col max-h-[60vh] md:max-h-[80vh] overflow-y-auto">
-                <h1 className="text-lg sm:text-2xl text-center mb-4 sm:mb-6 text-gray-900">Tasks Chat</h1>
-                <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900">Tasks Chat</h1>
+            <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (
                         <div
                             key={index}
