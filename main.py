@@ -15,7 +15,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # CORS setup
 
-'''
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
@@ -32,7 +32,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+'''
 
 # Log incoming requests
 @app.middleware("http")
