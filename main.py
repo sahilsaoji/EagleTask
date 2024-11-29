@@ -20,8 +20,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://sahilsaoji.github.io", "https://eagletask.onrender.com"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "Accept"],
+    allow_methods=["GET", "POST", "OPTIONS", "PUT", "PATCH"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "Content-Disposition"],
 )
 
 '''
