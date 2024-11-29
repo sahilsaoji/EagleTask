@@ -7,7 +7,6 @@ const Support = () => {
     const [input, setInput] = useState("");
     const chatEndRef = useRef(null);
 
-    // Sample list of support resource questions
     const supportResources = [
         { name: "Counseling Services", description: "Where can I go for counseling at BC?" },
         { name: "Academic Advising", description: "How do I access academic advising?" },
@@ -22,7 +21,6 @@ const Support = () => {
         }
     }, [messages]);
 
-    // Handle sending a message
     const sendMessage = async (message = input) => {
         if (message.trim() === "") return;
         setInput("");
@@ -36,7 +34,6 @@ const Support = () => {
             const botResponse = await chatWithSupport(message);
             const botMessage = { sender: "bot", text: botResponse };
 
-            // Replace the loading message with the actual response
             setMessages((prevMessages) =>
                 prevMessages.map((msg) =>
                     msg.isLoading ? botMessage : msg
@@ -59,15 +56,15 @@ const Support = () => {
         }
     };
 
-    // Clear all messages
     const clearMessages = () => {
         setMessages([]);
     };
 
     return (
-        <div className="flex min-h-screen bg-[#D9D9D9] p-8">
-            <div className="w-1/3 bg-[#1E1E1E] text-white rounded-lg p-6 shadow-lg mr-4 max-h-[80vh] overflow-y-auto">
-                <h2 className="text-2xl font-semibold mb-6">Sample Questions</h2>
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#D9D9D9] text-white p-4 sm:p-6 gap-4 overflow-auto">
+            {/* Questions Section */}
+            <div className="w-full lg:w-1/3 bg-[#1E1E1E] text-white rounded-lg p-6 shadow-lg mb-6 lg:mb-0 lg:mr-4 max-h-[60vh] lg:max-h-[80vh] overflow-y-auto">
+                <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6">Sample Questions</h2>
                 <ul className="space-y-4">
                     {supportResources.map((resource, index) => (
                         <li
@@ -75,15 +72,16 @@ const Support = () => {
                             className="bg-[#7B313C] p-4 rounded-lg cursor-pointer hover:bg-[#BC9B6A] transition duration-200"
                             onClick={() => sendMessage(resource.description)}
                         >
-                            <h3 className="text-xl font-semibold">{resource.name}</h3>
+                            <h3 className="text-lg sm:text-xl font-semibold">{resource.name}</h3>
                             <p className="text-sm text-[#D9D9D9]">{resource.description}</p>
                         </li>
                     ))}
                 </ul>
             </div>
 
-            <div className="w-2/3 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
-                <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Support Chat</h1>
+            {/* Chat Section */}
+            <div className="w-full lg:w-2/3 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[60vh] lg:max-h-[80vh] overflow-hidden">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-center mb-4 sm:mb-6 text-gray-900">Support Chat</h1>
                 <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
                     {messages.map((msg, index) => (
                         <div
@@ -112,19 +110,19 @@ const Support = () => {
                     <input
                         type="text"
                         placeholder="Ask about a support resource..."
-                        className="flex-1 p-2 rounded-md border border-gray-400 bg-black text-white"
+                        className="flex-1 p-2 rounded-md border border-gray-400 bg-black text-white text-sm sm:text-base"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
                     <button
-                        className="bg-[#7B313C] text-white px-4 py-2 rounded-md hover:bg-[#BC9B6A] transition duration-200"
+                        className="bg-[#7B313C] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A] transition duration-200"
                         onClick={() => sendMessage(input)}
                     >
                         Send
                     </button>
                     <button
-                        className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md hover:bg-[#BC9B6A] transition duration-200"
+                        className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md text-sm sm:text-base hover:bg-[#BC9B6A] transition duration-200"
                         onClick={clearMessages}
                     >
                         Clear

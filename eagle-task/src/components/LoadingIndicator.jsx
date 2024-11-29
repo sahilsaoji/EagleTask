@@ -19,7 +19,6 @@ const LoadingIndicator = ({ loading }) => {
         if (loading) {
             let index = 0;
 
-            // Update the message based on the defined delays
             const messageInterval = setInterval(() => {
                 index += 1;
                 if (index < loadingMessages.length) {
@@ -27,16 +26,18 @@ const LoadingIndicator = ({ loading }) => {
                 } else {
                     clearInterval(messageInterval);
                 }
-            }, 1500); // Change message every 1.5 seconds
+            }, 1500);
 
             return () => clearInterval(messageInterval);
         }
     }, [loading]);
 
     return (
-        <div className="flex flex-col justify-center items-center h-screen w-full bg-[#7B313C] text-white">
-            <div className="animate-spin rounded-full h-28 w-28 border-t-4 border-white border-opacity-75"></div>
-            <div className="text-xl font-semibold text-center mt-8">{currentMessage}</div>
+        <div className="flex flex-col justify-center items-center min-h-screen w-full bg-[#7B313C] text-white px-4 sm:px-6">
+            <div className="animate-spin rounded-full h-20 w-20 sm:h-28 sm:w-28 border-t-4 border-white border-opacity-75"></div>
+            <div className="text-lg sm:text-xl font-semibold text-center mt-6 sm:mt-8">
+                {currentMessage}
+            </div>
         </div>
     );
 };

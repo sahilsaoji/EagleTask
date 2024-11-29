@@ -153,6 +153,7 @@ async def generate_task_list(request: TaskListRequest):
             You need to break down the upcoming assignments into tasks and provide a brief description and time estimate for each task.
             
             Please return a JSON object directly, without wrapping it in code blocks, ie no triple backticks or json keyword.
+            Please return tasks in order, with the most urgent tasks at the top. 
             Please return a JSON object in the following format:
             {
                 "tasks": [

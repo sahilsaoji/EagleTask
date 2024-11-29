@@ -91,113 +91,111 @@ const Grades = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-[#D9D9D9] text-white overflow-auto">
-            <div className="flex-1 p-6 flex gap-6">
-                {/* Grades Section */}
-                <div className="w-1/2 bg-[#1E1E1E] rounded-lg p-6 max-h-[80vh] overflow-y-auto">
-                    <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-3xl font-semibold">Grades</h1>
-                        <button
-                            className="bg-[#7B313C] text-white px-4 py-2 rounded-md"
-                            onClick={fetchGrades}
-                        >
-                            {loading ? "Loading Grades..." : "Refresh My Grades"}
-                        </button>
-                    </div>
-
-                    {loading && <LoadingIndicator loading={loading} />}
-
-                    {!loading && (
-                        <div className="space-y-4">
-                            {coursesWithGrades.map((course, index) => (
-                                <div key={index} className="bg-[#7B313C] rounded-lg p-4">
-                                    <div
-                                        className="flex justify-between items-center cursor-pointer"
-                                        onClick={() => toggleDropdown(index)}
-                                    >
-                                        <h2 className="text-xl font-semibold">{course.course_name}</h2>
-                                        <button className="text-white">
-                                            {course.isOpen ? (
-                                                <i className="fas fa-chevron-up text-2xl"></i>
-                                            ) : (
-                                                <i className="fas fa-chevron-down text-2xl"></i>
-                                            )}
-                                        </button>
-                                    </div>
-                                    {course.isOpen && (
-                                        <div className="bg-[#D9D9D9] p-4 mt-2 rounded-md">
-                                            {course.graded_assignments.length > 0 ? (
-                                                course.graded_assignments.map((assignment, assignmentIndex) => (
-                                                    <div
-                                                        key={assignmentIndex}
-                                                        className="flex justify-between bg-[#BC9B6A] rounded-md p-4 mb-2 text-white items-center"
-                                                    >
-                                                        <span>{assignment.name}</span>
-                                                        <span className="font-bold ml-auto text-right">
-                                                            {assignment.submission_score} / {assignment.points_possible} (
-                                                            {((assignment.submission_score / assignment.points_possible) * 100).toFixed(2)}%)
-                                                        </span>
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <p className="text-gray-400">No grades available</p>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+        <div className="flex flex-col md:flex-row min-h-screen bg-[#D9D9D9] text-white p-4 sm:p-6 gap-4 overflow-auto">
+            {/* Grades Section */}
+            <div className="w-full lg:w-1/2 bg-[#1E1E1E] rounded-lg p-6 mb-6 lg:mb-0 lg:mr-3 max-h-[80vh] overflow-y-auto">
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl sm:text-3xl font-semibold">Grades</h1>
+                    <button
+                        className="bg-[#7B313C] text-white px-4 py-2 rounded-md text-sm sm:text-base"
+                        onClick={fetchGrades}
+                    >
+                        {loading ? "Loading Grades..." : "Refresh My Grades"}
+                    </button>
                 </div>
 
-                {/* Chat with AI Section */}
-                <div className="w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh]">
-                    <h1 className="text-3xl font-semibold text-center mb-6 text-gray-900">Grades Chat</h1>
-                    <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
-                        {messages.map((msg, index) => (
-                            <div
-                                key={index}
-                                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                            >
+                {loading && <LoadingIndicator loading={loading} />}
+
+                {!loading && (
+                    <div className="space-y-4">
+                        {coursesWithGrades.map((course, index) => (
+                            <div key={index} className="bg-[#7B313C] rounded-lg p-4">
                                 <div
-                                    className={`p-3 mb-2 rounded-lg max-w-lg ${
-                                        msg.sender === "user"
-                                            ? "bg-[#7B313C] text-white text-right"
-                                            : "bg-gray-300 text-gray-900 text-left"
-                                    }`}
-                                    style={{ wordWrap: "break-word" }}
+                                    className="flex justify-between items-center cursor-pointer"
+                                    onClick={() => toggleDropdown(index)}
                                 >
-                                    {msg.isLoading ? (
-                                        <img src={`${process.env.PUBLIC_URL}/loading.svg`} alt="Loading" className="h-5 w-5 mx-auto" />
-                                    ) : (
-                                        <ReactMarkdown>{msg.text}</ReactMarkdown>
-                                    )}
+                                    <h2 className="text-lg sm:text-xl font-semibold">{course.course_name}</h2>
+                                    <button className="text-white">
+                                        {course.isOpen ? (
+                                            <i className="fas fa-chevron-up text-xl"></i>
+                                        ) : (
+                                            <i className="fas fa-chevron-down text-xl"></i>
+                                        )}
+                                    </button>
                                 </div>
+                                {course.isOpen && (
+                                    <div className="bg-[#D9D9D9] p-4 mt-2 rounded-md">
+                                        {course.graded_assignments.length > 0 ? (
+                                            course.graded_assignments.map((assignment, assignmentIndex) => (
+                                                <div
+                                                    key={assignmentIndex}
+                                                    className="flex justify-between bg-[#BC9B6A] rounded-md p-4 mb-2 text-white items-center"
+                                                >
+                                                    <span>{assignment.name}</span>
+                                                    <span className="font-bold ml-auto text-right">
+                                                        {assignment.submission_score} / {assignment.points_possible} (
+                                                        {((assignment.submission_score / assignment.points_possible) * 100).toFixed(2)}%)
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-gray-400">No grades available</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="text"
-                            placeholder="Type your message here..."
-                            className="flex-1 p-2 rounded-md border border-gray-400 bg-black text-white"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                        <button
-                            className="bg-[#7B313C] text-white px-4 py-2 rounded-md"
-                            onClick={() => sendMessage(input)}
+                )}
+            </div>
+
+            {/* Chat Section */}
+            <div className="w-full lg:w-1/2 bg-white shadow-md rounded-lg p-6 flex flex-col max-h-[80vh] overflow-y-auto">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-center mb-6 text-gray-900">Grades Chat</h1>
+                <div className="flex-1 bg-gray-100 rounded-lg p-4 mb-4 overflow-y-auto border border-gray-300">
+                    {messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                         >
-                            Send
-                        </button>
-                        <button
-                            className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md"
-                            onClick={clearMessages}
-                        >
-                            Clear
-                        </button>
-                    </div>
+                            <div
+                                className={`p-3 mb-2 rounded-lg max-w-lg ${
+                                    msg.sender === "user"
+                                        ? "bg-[#7B313C] text-white text-right"
+                                        : "bg-gray-300 text-gray-900 text-left"
+                                }`}
+                                style={{ wordWrap: "break-word" }}
+                            >
+                                {msg.isLoading ? (
+                                    <img src={`${process.env.PUBLIC_URL}/loading.svg`} alt="Loading" className="h-5 w-5 mx-auto" />
+                                ) : (
+                                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="text"
+                        placeholder="Type your message here..."
+                        className="flex-1 p-2 rounded-md border border-gray-400 bg-black text-white text-sm sm:text-base"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                    />
+                    <button
+                        className="bg-[#7B313C] text-white px-4 py-2 rounded-md text-sm sm:text-base"
+                        onClick={() => sendMessage(input)}
+                    >
+                        Send
+                    </button>
+                    <button
+                        className="bg-[#1E1E1E] text-white px-4 py-2 rounded-md text-sm sm:text-base"
+                        onClick={clearMessages}
+                    >
+                        Clear
+                    </button>
                 </div>
             </div>
         </div>
